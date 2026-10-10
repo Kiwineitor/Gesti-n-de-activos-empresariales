@@ -1,0 +1,28 @@
+# Credenciales y configuracion local - NO SUBIR
+application-cris.properties
+application-local.properties
+application-dev.properties
+
+# Build
+target/
+*.class
+
+# Logs
+Logs/
+logs/
+*.log
+
+# IDE
+.idea/
+*.iml
+/.claude/
+/.junie/
+
+# Build Vue (generado con npm run build, no versionar)
+/src/main/resources/static/assets/
+/src/main/resources/static/index.html
+/src/main/resources/static/favicon.ico
+/docs/
+/.superpowers/
+/graphify-out/
+/docs/

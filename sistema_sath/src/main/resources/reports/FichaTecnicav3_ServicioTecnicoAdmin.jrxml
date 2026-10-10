@@ -1,0 +1,480 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="FichaTecnicav3" language="java" pageWidth="630" pageHeight="842" columnWidth="630" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="62f3a005-8985-4d6e-a3df-04c8dd1e5670">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (4)"/>
+	<parameter name="NumSol" class="java.lang.Long"/>
+	<parameter name="CodigoActivo" class="java.lang.String"/>
+	<parameter name="logoUap" class="java.io.InputStream"/>
+	<parameter name="QRServicioTecnico" class="byte[]"/>
+	<parameter name="QRAutorizacion" class="byte[]"/>
+	<parameter name="QRVerificacion" class="byte[]"/>
+	<parameter name="Dtic" class="java.io.InputStream"/>
+	<parameter name="Observacion" class="java.lang.String"/>
+	<parameter name="ServiciosIzquierda" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ServiciosDerecha" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Recomendacion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoServicios" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FechaEntrega" class="java.sql.Date"/>
+	<parameter name="AutorizadoPor" class="java.lang.String"/>
+	<parameter name="CargoAutorizado" class="java.lang.String"/>
+	<query language="sql"><![CDATA[
+SELECT p_sol.nombre_per || ' ' || p_sol.ap_paterno_per || ' ' || p_sol.ap_materno_per         AS nombreSolicitante,
+       p_sol.celular_per                                                                      AS telefonoSolicitante,
+       c_sol.nombre_car                                                                       AS cargoSolicitante,
+       u_sol.nombre_uni                                                                       AS unidadSolicitante,
+       a.codigo_act                                                                           AS codigoActivo,
+       a.descripcion_act                                                                      AS descripcionActivo,
+       u_sol.nombre_uni                                                                       AS unidadActivo,
+       t.nombre_tipo_act                                                                      AS tipoActivo,
+       STRING_AGG(DISTINCT f.nombre_fall, ', ')                                               AS fallas,
+       STRING_AGG(DISTINCT s.observaciones_serv, ', ')                                        AS observaciones,
+       so.fecha_sol                                                                           AS fechaRecepcion,
+       p_tec.nombre_per || ' ' || p_tec.ap_paterno_per || ' ' || p_tec.ap_materno_per         AS nombreCompletoTecnico,
+       STRING_AGG(DISTINCT s.nombre_serv, ', ')                                               AS tipoServicio,
+       COALESCE(STRING_AGG(DISTINCT ts.nombre_tipo, ', '), '—')                              AS categoriaservicio,
+       so.descripcion_sol                                                                     AS recomendacion,
+       so.nro_sol_externa                                                                      as MantidLondra,
+       COALESCE(MAX(aten.fecha_fin_reparacion_aten_sol), MAX(ds.fecha_actualizacion_det_sol)) AS fechaentrega
+FROM public.solicitud so
+         LEFT JOIN public.administrativo adm_sol ON so.id_administrativo = adm_sol.id_administrativo
+         LEFT JOIN public.persona p_sol ON adm_sol.id_persona = p_sol.id_persona
+         LEFT JOIN public.cargo c_sol ON adm_sol.id_cargo = c_sol.id_cargo
+         LEFT JOIN public.unidad u_sol ON adm_sol.id_unidad = u_sol.id_unidad
+         LEFT JOIN public.detalle_solicitud ds ON so.id_solicitud = ds.id_solicitud
+         LEFT JOIN public.activo a ON ds.id_activo = a.id_activo
+         LEFT JOIN public.unidad u ON adm_sol.id_unidad = u.id_unidad
+         LEFT JOIN public.tipo_activo t ON a.id_tipo_activo = t.id_tipo_activo
+         LEFT JOIN public.falla_reportada fr ON ds.id_detalle_solicitud = fr.id_detalle_solicitud
+         LEFT JOIN public.falla f ON fr.id_falla = f.id_falla
+         LEFT JOIN public.atencion_solicitud aten ON ds.id_detalle_solicitud = aten.id_detalle_solicitud
+    AND aten._estado_aud <> 'ELIMINADO'
+         LEFT JOIN public.atencion_servicio asv ON aten.id_atencion_solicitud = asv.id_atencion_solicitud
+    AND asv._estado_aud <> 'ELIMINADO'
+         LEFT JOIN public.servicio s ON asv.id_servicio = s.id_servicio
+         LEFT JOIN public.tipo_servicio ts ON s.id_tipo_servicio = ts.id_tipo_servicio
+         LEFT JOIN (SELECT DISTINCT ON (id_solicitud) id_solicitud, id_administrativo
+                    FROM public.tecnico_asignado
+                    WHERE _estado_aud <> 'ELIMINADO'
+                    ORDER BY id_solicitud, id_tecnico_asignado) ta ON ta.id_solicitud = so.id_solicitud
+         LEFT JOIN public.administrativo adm_tec ON ta.id_administrativo = adm_tec.id_administrativo
+         LEFT JOIN public.persona p_tec ON adm_tec.id_persona = p_tec.id_persona
+WHERE so.nro_sol = $P{NumSol}
+  AND a.codigo_act = $P{CodigoActivo}
+GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
+    p_sol.celular_per,
+    c_sol.nombre_car,
+    u_sol.nombre_uni,
+    a.codigo_act,
+    a.descripcion_act,
+    t.nombre_tipo_act,
+    so.fecha_sol,
+    so.descripcion_sol,
+    so.nro_sol_externa,
+    p_tec.nombre_per, p_tec.ap_paterno_per, p_tec.ap_materno_per;]]></query>
+	<field name="nombresolicitante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombresolicitante"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombresolicitante"/>
+	</field>
+	<field name="telefonosolicitante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="telefonosolicitante"/>
+		<property name="com.jaspersoft.studio.field.label" value="telefonosolicitante"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="persona"/>
+	</field>
+	<field name="cargosolicitante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cargosolicitante"/>
+		<property name="com.jaspersoft.studio.field.label" value="cargosolicitante"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cargo"/>
+	</field>
+	<field name="unidadsolicitante" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="unidadsolicitante"/>
+		<property name="com.jaspersoft.studio.field.label" value="unidadsolicitante"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidad"/>
+	</field>
+	<field name="codigoactivo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="codigoactivo"/>
+		<property name="com.jaspersoft.studio.field.label" value="codigoactivo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="activo"/>
+	</field>
+	<field name="descripcionactivo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="descripcionactivo"/>
+		<property name="com.jaspersoft.studio.field.label" value="descripcionactivo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="activo"/>
+	</field>
+	<field name="unidadactivo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="unidadactivo"/>
+		<property name="com.jaspersoft.studio.field.label" value="unidadactivo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidad"/>
+	</field>
+	<field name="tipoactivo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tipoactivo"/>
+		<property name="com.jaspersoft.studio.field.label" value="tipoactivo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipo_activo"/>
+	</field>
+	<field name="fallas" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fallas"/>
+		<property name="com.jaspersoft.studio.field.label" value="fallas"/>
+	</field>
+	<field name="observaciones" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="observaciones"/>
+		<property name="com.jaspersoft.studio.field.label" value="observaciones"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servicio"/>
+	</field>
+	<field name="fecharecepcion" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="fecharecepcion"/>
+		<property name="com.jaspersoft.studio.field.label" value="fecharecepcion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="solicitud"/>
+	</field>
+	<field name="nombrecompletotecnico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombrecompletotecnico"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombrecompletotecnico"/>
+	</field>
+	<field name="fechaentrega" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="fechaentrega"/>
+		<property name="com.jaspersoft.studio.field.label" value="fechaentrega"/>
+	</field>
+	<field name="MantidLondra" class="java.lang.Integer"/>
+	<field name="categoriaservicio" class="java.lang.String"/>
+	<detail>
+		<band height="840">
+			<element kind="rectangle" uuid="9d0a74ff-2b19-4c2d-9367-5d7aed28c02a" x="52" y="186" width="545" height="21" backcolor="#4F81BD" mode="Transparent">
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="599e2d14-a470-4dba-af35-938ed5ea7571" x="52" y="348" width="545" height="83" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="f3412f86-6967-457f-81fe-154737ac201f" x="372" y="127" width="225" height="59" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="517b63d6-1b2a-44b4-8f27-19b004d2ce78" x="52" y="457" width="545" height="113" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="e8f75773-8b81-40ea-8c3e-010d2e7e8905" x="52" y="431" width="545" height="26" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="f481258d-2568-4bde-804a-b9e03d7e28dd" x="52" y="207" width="545" height="114" backcolor="#4F81BD" mode="Transparent">
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="d645f608-b5bc-46d8-b446-c4617176a27b" x="52" y="127" width="320" height="59" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="rectangle" uuid="edc84d66-1456-4c29-9711-39c79cb7ba67" x="52" y="102" width="545" height="25" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="staticText" uuid="17bc11ae-7373-48a7-b88e-1a3ff73f996b" key="" x="263" y="105" width="128" height="18" forecolor="#000000" markup="none" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[Datos del solicitante]]></text>
+			</element>
+			<element kind="textField" uuid="82b7fedd-3d92-42b1-a167-1429e12dafd4" x="146" y="126" width="224" height="30" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="df16f695-e44f-4b72-a977-a37a11aca569"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{nombresolicitante}]]></expression>
+			</element>
+			<element kind="textField" uuid="26bc8879-fb98-4c90-bd60-e4fe62ffc9c5" x="146" y="156" width="224" height="30" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="447bbbcd-fe56-4482-9ce4-4ed049f0fe97"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{cargosolicitante}]]></expression>
+			</element>
+			<element kind="textField" uuid="b84e5a84-7a6b-47e2-a483-e58f683a6f70" x="438" y="156" width="159" height="30" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fbc10f62-c31a-4592-8a50-49c5a839a7f9"/>
+				<expression><![CDATA[$F{unidadsolicitante}]]></expression>
+			</element>
+			<element kind="staticText" uuid="3e5de4c3-d273-49c5-bffb-5da005d93461" x="372" y="156" width="66" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Unidad:]]></text>
+			</element>
+			<element kind="staticText" uuid="bebec98c-2f2c-4973-95f3-90141874a43e" x="52" y="156" width="94" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Cargo:]]></text>
+			</element>
+			<element kind="staticText" uuid="a1390146-6adb-476e-ab61-408ef03f46ba" x="52" y="126" width="94" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Nombre:]]></text>
+			</element>
+			<element kind="textField" uuid="a8296c0f-a792-486d-b5c4-55dc726ab8d7" x="438" y="127" width="159" height="29" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4f9ce4db-17b3-4174-8c58-7cfb7cef6f31"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{telefonosolicitante}]]></expression>
+			</element>
+			<element kind="staticText" uuid="8c4e3614-faf3-428f-bc32-dbbac943ccb8" key="" x="260" y="187" width="128" height="20" forecolor="#000000" markup="none" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[Datos del Equipo ]]></text>
+			</element>
+			<element kind="textField" uuid="b99a323a-968e-467c-8c02-94ebff24125c" x="146" y="207" width="224" height="30" mode="Transparent" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8dddefff-7ae5-45a2-9d05-bedf7a07f463"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{codigoactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="376fac44-26f1-48e3-8a1f-24cce818b0e3" x="52" y="207" width="94" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Código Activo :]]></text>
+			</element>
+			<element kind="staticText" uuid="5221ef32-b7a2-43cc-9ea9-e05e607dcd61" x="52" y="267" width="94" height="54" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Descripción:]]></text>
+			</element>
+			<element kind="textField" uuid="7de49940-ccf9-40b3-8fb4-32fd9f4f72c2" x="146" y="267" width="450" height="54" mode="Transparent" fontName="Roboto" hTextAlign="Justified" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a0b8a4d7-d593-44cd-8eec-aba2ccee1dba"/>
+				<expression><![CDATA[$F{descripcionactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="e57381f3-af5c-4642-b80e-11859c85210b" key="" x="257" y="435" width="128" height="18" forecolor="#000000" markup="none" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[Servicio Solicitado]]></text>
+			</element>
+			<element kind="textField" uuid="802b9054-d503-4b35-9291-338a3374e9d2" x="147" y="457" width="228" height="60" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="12249959-ba97-4b83-a284-05a91c574981"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{fallas}]]></expression>
+			</element>
+			<element kind="staticText" uuid="df88e2bd-b688-4ccc-a780-fbbb130ed105" x="52" y="457" width="95" height="60" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Fallas:]]></text>
+			</element>
+			<element kind="staticText" uuid="c5011496-49af-475a-8b63-f1d274c8a1e3" x="52" y="517" width="95" height="53" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Observaciones:]]></text>
+			</element>
+			<element kind="textField" uuid="fb1b7d72-8932-4b1f-b06d-afc7845f75d8" x="147" y="517" width="450" height="53" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1c1b4fea-c1da-47bf-b0d2-3f3f10d605fb"/>
+				<expression><![CDATA[
+                    $P{Observacion} != null && !$P{Observacion}.trim().isEmpty() ? $P{Observacion} : ($F{observaciones} != null ? $F{observaciones} : "")]]></expression>
+			</element>
+			<element kind="textField" uuid="31c5ed28-1886-4c18-a903-23653755ec09" x="471" y="457" width="126" height="30" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83762658-f5f9-48a3-a4ee-40063128f204"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[
+                    $F{fecharecepcion} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecharecepcion}) : ""]]></expression>
+			</element>
+			<element kind="rectangle" uuid="96c6661a-992b-4efb-8c1c-ebf0e3d2db8b" x="52" y="570" width="266" height="136" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="textField" uuid="d8fbc771-69c4-453f-b291-7bc99e408b2e" x="115" y="670" width="151" height="14" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ccf634b4-1683-4171-98f5-dcd5876c0cd1"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box>
+					<pen lineWidth="1.25"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<expression><![CDATA[$F{nombresolicitante}]]></expression>
+			</element>
+			<element kind="staticText" uuid="65e4b271-b18c-473b-a0ae-e2c7da8f8bb0" x="142" y="570" width="97" height="11" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<text><![CDATA[RECIBI CONFORME]]></text>
+			</element>
+			<element kind="frame" uuid="28f7b3d2-b051-4b29-a2cf-bd7ff37e316d" x="50" y="27" width="546" height="65">
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<element kind="rectangle" uuid="97fed971-9a6f-4989-aedb-c74d12dac40f" x="450" y="-13" width="96" height="60" forecolor="#4F81BD" mode="Transparent">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<pen lineWidth="1.0" lineColor="#4F81BD"/>
+				</element>
+				<element kind="rectangle" uuid="ef1844f6-96d0-4498-b745-853df6d47067" x="1" y="-13" width="97" height="60" forecolor="#045ECC" mode="Transparent">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<pen lineWidth="1.0" lineColor="#4F81BD"/>
+				</element>
+				<element kind="rectangle" uuid="27a925a7-2a42-4b10-ab3f-02675a35c9bf" x="98" y="-13" width="352" height="20" forecolor="#045ECC" mode="Transparent">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<pen lineWidth="1.0" lineColor="#4F81BD"/>
+				</element>
+				<element kind="rectangle" uuid="fd8848fe-704d-4745-8bb6-389127e8fc0b" x="98" y="7" width="352" height="20" forecolor="#045ECC" mode="Transparent">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<pen lineWidth="1.0" lineColor="#4F81BD"/>
+				</element>
+				<element kind="rectangle" uuid="4c62dca8-4535-4068-9bd8-dbffcec346c2" x="98" y="27" width="352" height="20" forecolor="#045ECC" mode="Transparent">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<pen lineWidth="1.0" lineColor="#4F81BD"/>
+				</element>
+				<element kind="staticText" uuid="c92e9e52-ed42-46cb-b543-c748c38524e7" x="96" y="-13" width="354" height="20" fontName="Roboto" fontSize="12.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+				</element>
+				<element kind="staticText" uuid="f60ef31d-44e5-43f5-8039-300278cb181a" x="96" y="7" width="354" height="20" fontName="Roboto" fontSize="11.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<text><![CDATA[FICHA TÉCNICA]]></text>
+				</element>
+				<element kind="image" uuid="4658a07a-1893-4810-bc74-ecf11f67762e" x="475" y="-13" width="50" height="59">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<expression><![CDATA[$P{Dtic}]]></expression>
+				</element>
+				<element kind="image" uuid="db541d5f-61f3-4fa3-a244-4cffdf66f9ee" x="18" y="-13" width="60" height="69">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<expression><![CDATA[$P{logoUap}]]></expression>
+				</element>
+				<element kind="textField" uuid="c3d4e5f6-a7b8-9012-cdef-012345678901" x="96" y="27" width="354" height="20" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<expression><![CDATA["N° " + $P{NumSol}]]></expression>
+				</element>
+			</element>
+			<element kind="staticText" uuid="9af0733c-efff-41b3-9f5e-815883d9042b" x="52" y="237" width="94" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Unidad:]]></text>
+			</element>
+			<element kind="textField" uuid="a626e2e5-0112-4fb5-a2d6-2ddd4ad27390" x="146" y="237" width="224" height="30" mode="Transparent" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4e9156f1-c4bc-4c86-af41-c2553f5edfed"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{unidadactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="e998ecc0-9f9d-4bca-8ea4-b0c264c8e137" x="370" y="207" width="96" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Tipo Activo:]]></text>
+			</element>
+			<element kind="textField" uuid="a13ce8e3-2053-439f-bf5c-1ce5bd4affb0" x="466" y="207" width="130" height="30" mode="Transparent" fontName="Roboto" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70ea5646-5058-4a56-a899-ac3c56814826"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{tipoactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="8e341a0e-479d-46bb-94a4-ad23c17117b0" x="375" y="457" width="96" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Fecha de Recepción:]]></text>
+			</element>
+			<element kind="staticText" uuid="74865c23-a155-43e5-8068-ea46c72ef76d" x="372" y="127" width="66" height="29" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Teléfono:]]></text>
+			</element>
+			<element kind="rectangle" uuid="7351c1e0-2b07-4ad6-a3f2-034a202d6724" x="318" y="570" width="274" height="136" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="textField" uuid="f75906bf-6e19-44f8-ba9f-a9199bbba8af" x="384" y="683" width="180" height="21" fontName="Roboto" fontSize="7.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$P{CargoAutorizado}]]></expression>
+			</element>
+			<element kind="textField" uuid="0027f2cf-302e-4583-8a6b-cd496643841c" x="384" y="670" width="179" height="14" fontName="Roboto" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box>
+					<pen lineWidth="1.25"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<expression><![CDATA[$P{AutorizadoPor}]]></expression>
+			</element>
+			<element kind="image" uuid="5c3eb75e-e225-4ee9-9806-a9fd0e2a579d" x="436" y="589" width="74" height="77" printInFirstWholeBand="true">
+				<expression><![CDATA[$P{QRAutorizacion}]]></expression>
+			</element>
+			<element kind="rectangle" uuid="b1276c7c-d53b-4965-9854-695421494ee3" x="52" y="321" width="545" height="27" mode="Transparent">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<pen lineColor="#4F84BD"/>
+			</element>
+			<element kind="staticText" uuid="a4466339-9287-4216-b87c-d3cddd9d1486" key="" x="263" y="325" width="128" height="18" forecolor="#000000" markup="none" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[Informe Técnico]]></text>
+			</element>
+			<element kind="staticText" uuid="0d3377a7-202b-4d81-9347-b98efb11a0d1" x="52" y="348" width="93" height="54" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Justified" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Servicios Realizados:]]></text>
+			</element>
+			<element kind="staticText" uuid="e692e2d2-b413-427e-88cc-a0da166f3c05" x="52" y="402" width="93" height="29" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Fecha de entrega:]]></text>
+			</element>
+			<element kind="staticText" uuid="5c989300-c5e4-4129-b69f-ab1fdd4cc87c" x="52" y="705" width="544" height="24" fontName="DejaVu Sans" fontSize="7.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<text><![CDATA[
+                    Nota: Todos los aparatos son devueltos con su respectivo informe técnico, el cual deberá contar la firma de conformidad del solicitante y del encargado de Hardware.]]></text>
+			</element>
+			<element kind="textField" uuid="2e2089f6-b875-42b6-a63c-daf9f8d43da2" x="145" y="348" width="204" height="54">
+				<expression><![CDATA[$P{ServiciosIzquierda}]]></expression>
+			</element>
+			<element kind="textField" uuid="85ab6a48-bdef-4193-96f8-aa4a976b266f" x="349" y="348" width="248" height="54">
+				<expression><![CDATA[$P{ServiciosDerecha}]]></expression>
+			</element>
+			<element kind="textField" uuid="4591e8ff-f36e-4858-93d5-82c0ed50aa46" x="145" y="402" width="204" height="29" vTextAlign="Middle">
+				<expression><![CDATA[
+                    $F{fechaentrega} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fechaentrega}) : ""]]></expression>
+			</element>
+			<element kind="staticText" uuid="e14c4ffd-e696-4c39-9621-511890d9da98" x="375" y="487" width="96" height="30" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[En respuesta a la Solicitud N°:]]></text>
+			</element>
+			<element kind="textField" uuid="92fea3dd-f92c-4588-8c45-6bffb19133f9" x="471" y="487" width="126" height="30" vTextAlign="Middle">
+				<expression><![CDATA[$F{MantidLondra} != null ? String.format("%04d", $F{MantidLondra}) + "/" + new java.text.SimpleDateFormat("yyyy").format($F{fecharecepcion}) : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="6c1b9112-7d26-4ea7-9bd6-84c49b8a5d01" x="99" y="685" width="181" height="10" fontName="Roboto" fontSize="7.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="447bbbcd-fe56-4482-9ce4-4ed049f0fe97"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<expression><![CDATA[$F{cargosolicitante}]]></expression>
+			</element>
+			<element kind="image" uuid="b26a0ab0-20ac-44ef-aede-bc9519aa8b79" x="147" y="583" width="87" height="85" printInFirstWholeBand="true">
+				<expression><![CDATA[$P{QRServicioTecnico}]]></expression>
+			</element>
+			<element kind="staticText" uuid="cc815f44-2449-40c4-a646-9beb98bbfd6c" x="349" y="402" width="94" height="29" backcolor="#4F81BD" mode="Opaque" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<box leftPadding="5"/>
+				<text><![CDATA[Tipo de Servicio:]]></text>
+			</element>
+			<element kind="textField" uuid="b8381915-6b4e-4120-b5c0-60d700675653" x="443" y="402" width="154" height="29" vTextAlign="Middle">
+				<expression><![CDATA[$F{categoriaservicio}]]></expression>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+</jasperReport>

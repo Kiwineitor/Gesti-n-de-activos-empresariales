@@ -1,0 +1,11 @@
+{
+  "appId": "bo.edu.uap.sath",
+  "appName": "SATH",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "http"
+  }
+}

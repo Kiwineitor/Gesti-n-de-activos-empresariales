@@ -1,0 +1,273 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="InformeEspecifico" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="ae3f1c2d-1234-4abc-9def-000000000001">
+	<parameter name="IdInformeEspecifico" class="java.lang.Long"/>
+	<parameter name="logoUap" class="java.io.InputStream"/>
+	<parameter name="Dtic" class="java.io.InputStream"/>
+	<parameter name="Membrete_Informes" class="java.io.InputStream"/>
+	<query language="sql"><![CDATA[
+SELECT
+    ie.nro_informe                                                                              AS nroinformetext,
+    ie.observaciones                                                                            AS observaciones,
+    ie.trabajo_realizado                                                                        AS trabajorealizado,
+    ie.detalle                                                                                  AS detalle,
+    ie.fecha_cierre_informe                                                                     AS fechacierre,
+    so.nro_sol                                                                                  AS nrosolicitud,
+    so.fecha_sol                                                                                AS fechasolicitud,
+    a.codigo_act                                                                                AS codigoactivo,
+    a.descripcion_act                                                                           AS descripcionactivo,
+    tip.nombre_tipo_act                                                                         AS tipoactivo,
+    COALESCE(STRING_AGG(DISTINCT f.nombre_fall, ', '), 'Sin catalogar')                         AS fallas,
+    COALESCE(STRING_AGG(DISTINCT srv.nombre_serv, ', '), '—')                                  AS servicio,
+    COALESCE(pri.nombre_pri, '—')                                                              AS prioridad,
+    aten.fecha_ini_reparacion_aten_sol                                                          AS fechainireparacion,
+    aten.fecha_fin_reparacion_aten_sol                                                          AS fechafinreparacion,
+    COALESCE(STRING_AGG(DISTINCT p_tec.nombre_per || ' ' || p_tec.ap_paterno_per, ', '), '—') AS tecnicos,
+    p_sol.nombre_per || ' ' || p_sol.ap_paterno_per || ' ' || p_sol.ap_materno_per             AS solicitante,
+    u_sol.nombre_uni                                                                            AS unidad,
+    c_sol.nombre_car                                                                            AS cargo
+FROM informe_equipo_especifico ie
+         JOIN detalle_solicitud ds   ON ie.id_detalle_solicitud = ds.id_detalle_solicitud
+         JOIN solicitud so           ON ds.id_solicitud = so.id_solicitud
+         JOIN activo a               ON ds.id_activo = a.id_activo
+         LEFT JOIN tipo_activo tip   ON a.id_tipo_activo = tip.id_tipo_activo
+         LEFT JOIN falla_reportada fr ON ds.id_detalle_solicitud = fr.id_detalle_solicitud
+         LEFT JOIN falla f           ON fr.id_falla = f.id_falla
+         LEFT JOIN atencion_solicitud aten ON ds.id_detalle_solicitud = aten.id_detalle_solicitud
+         LEFT JOIN atencion_servicio as_srv ON aten.id_atencion_solicitud = as_srv.id_atencion_solicitud
+         LEFT JOIN servicio srv             ON as_srv.id_servicio = srv.id_servicio
+         LEFT JOIN prioridad pri     ON aten.id_prioridad = pri.id_prioridad
+         LEFT JOIN (
+             SELECT DISTINCT ON (id_solicitud) id_solicitud, id_administrativo
+             FROM tecnico_asignado
+             WHERE _estado_aud <> 'ELIMINADO'
+             ORDER BY id_solicitud, id_tecnico_asignado
+         ) ta ON ta.id_solicitud = so.id_solicitud
+         LEFT JOIN administrativo adm_tec ON ta.id_administrativo = adm_tec.id_administrativo
+         LEFT JOIN persona p_tec     ON adm_tec.id_persona = p_tec.id_persona
+         LEFT JOIN administrativo adm_sol ON so.id_administrativo = adm_sol.id_administrativo
+         LEFT JOIN persona p_sol     ON adm_sol.id_persona = p_sol.id_persona
+         LEFT JOIN unidad u_sol      ON adm_sol.id_unidad = u_sol.id_unidad
+         LEFT JOIN cargo c_sol       ON adm_sol.id_cargo = c_sol.id_cargo
+WHERE ie.id_informe_equipo_especifico = $P{IdInformeEspecifico}
+GROUP BY ie.nro_informe, ie.observaciones, ie.trabajo_realizado, ie.detalle, ie.fecha_cierre_informe,
+         so.nro_sol, so.fecha_sol, a.codigo_act, a.descripcion_act, tip.nombre_tipo_act,
+         pri.nombre_pri, aten.fecha_ini_reparacion_aten_sol, aten.fecha_fin_reparacion_aten_sol,
+         p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per, u_sol.nombre_uni, c_sol.nombre_car
+	]]></query>
+	<field name="nroinformetext" class="java.lang.Long"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="trabajorealizado" class="java.lang.String"/>
+	<field name="detalle" class="java.lang.String"/>
+	<field name="fechacierre" class="java.sql.Date"/>
+	<field name="nrosolicitud" class="java.lang.Long"/>
+	<field name="fechasolicitud" class="java.sql.Date"/>
+	<field name="codigoactivo" class="java.lang.String"/>
+	<field name="descripcionactivo" class="java.lang.String"/>
+	<field name="tipoactivo" class="java.lang.String"/>
+	<field name="fallas" class="java.lang.String"/>
+	<field name="servicio" class="java.lang.String"/>
+	<field name="prioridad" class="java.lang.String"/>
+	<field name="fechainireparacion" class="java.sql.Date"/>
+	<field name="fechafinreparacion" class="java.sql.Date"/>
+	<field name="tecnicos" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="unidad" class="java.lang.String"/>
+	<field name="cargo" class="java.lang.String"/>
+	<detail>
+		<band height="734" splitType="Stretch">
+			<element kind="rectangle" uuid="70018bc1-9a62-4a90-9ece-68c5c1dd0166" mode="Transparent" x="91" y="10" width="353" height="60" forecolor="#045ECC">
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<pen lineWidth="1.0" lineColor="#4F81BD"/>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000002" x="0" y="80" width="535" height="22" fontSize="13.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[INFORME TÉCNICO ESPECÍFICO DE EQUIPO]]></text>
+			</element>
+			<element kind="line" uuid="0000ae01-0000-0000-0000-000000000003" x="0" y="106" width="535" height="1">
+				<pen lineWidth="1.0" lineColor="#4361EE"/>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000004" x="0" y="112" width="80" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[N° Informe:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000005" x="80" y="112" width="170" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nroinformetext}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000006" x="270" y="112" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[N° Solicitud:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000007" x="400" y="112" width="135" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nrosolicitud}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000008" x="0" y="130" width="80" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Fecha Solicitud:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000009" x="80" y="130" width="170" height="16" fontSize="9.0" pattern="dd/MM/yyyy" blankWhenNull="true">
+				<expression><![CDATA[$F{fechasolicitud}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000010" x="270" y="130" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Fecha Informe:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000011" x="400" y="130" width="135" height="16" fontSize="9.0" pattern="dd/MM/yyyy" blankWhenNull="true">
+				<expression><![CDATA[$F{fechacierre}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000012" mode="Opaque" x="0" y="152" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DATOS DEL SOLICITANTE]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000013" x="0" y="170" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Solicitante:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000014" x="130" y="170" width="405" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{solicitante}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000015" x="0" y="188" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Unidad:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000016" x="130" y="188" width="175" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{unidad}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000017" x="0" y="204" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Cargo:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000018" x="130" y="204" width="135" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{cargo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000019" mode="Opaque" x="0" y="230" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DATOS DEL EQUIPO]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000020" x="0" y="248" width="130" height="16" fontSize="9.0" bold="true">
+				<text><![CDATA[Código Activo:]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000021" x="130" y="248" width="130" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{codigoactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000022" x="270" y="248" width="130" height="16" fontSize="9.0" bold="true">
+				<text><![CDATA[Tipo de Equipo:]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000023" x="400" y="248" width="135" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{tipoactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000024" x="0" y="266" width="130" height="16" fontSize="9.0" bold="true">
+				<text><![CDATA[Descripción:]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000025" x="130" y="266" width="405" height="24" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{descripcionactivo}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000026" mode="Opaque" x="0" y="297" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DATOS DE LA REPARACIÓN]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000027" x="0" y="315" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Prioridad:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000028" x="130" y="315" width="130" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{prioridad}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000029" x="270" y="315" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Servicio:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000030" x="400" y="315" width="135" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{servicio}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000031" x="0" y="333" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Inicio Reparación:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000032" x="130" y="333" width="130" height="16" fontSize="9.0" pattern="dd/MM/yyyy" blankWhenNull="true">
+				<expression><![CDATA[$F{fechainireparacion}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000033" x="270" y="333" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Fin Reparación:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000034" x="400" y="333" width="135" height="16" fontSize="9.0" pattern="dd/MM/yyyy" blankWhenNull="true">
+				<expression><![CDATA[$F{fechafinreparacion}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000035" x="0" y="351" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Fallas Catalogadas:]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000036" x="130" y="351" width="405" height="16" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{fallas}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000037" x="0" y="369" width="130" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Técnico(s):]]></text>
+				<box leftPadding="7"/>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000038" x="130" y="369" width="405" height="16" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{tecnicos}]]></expression>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000039" mode="Opaque" x="0" y="391" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[TRABAJO REALIZADO]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000040" x="0" y="409" width="535" height="60" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{trabajorealizado} != null ? $F{trabajorealizado} : "Sin descripción"]]></expression>
+				<box>
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000041" mode="Opaque" x="0" y="475" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DETALLE ADICIONAL]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000042" x="0" y="493" width="535" height="50" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{detalle} != null ? $F{detalle} : "Sin detalle adicional"]]></expression>
+				<box>
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000043" mode="Opaque" x="0" y="549" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</element>
+			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000044" x="0" y="567" width="535" height="50" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{observaciones} != null ? $F{observaciones} : "Sin observaciones"]]></expression>
+				<box>
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+			</element>
+			<element kind="line" uuid="0000ae01-0000-0000-0000-000000000045" x="0" y="619" width="535" height="1">
+				<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000046" x="0" y="702" width="250" height="16" fontSize="8.0" hTextAlign="Center">
+				<text><![CDATA[____________________________]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000047" x="285" y="702" width="250" height="16" fontSize="8.0" hTextAlign="Center">
+				<text><![CDATA[____________________________]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000048" x="0" y="720" width="250" height="14" fontSize="8.0" bold="true" hTextAlign="Center">
+				<text><![CDATA[Técnico Responsable]]></text>
+			</element>
+			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000049" x="285" y="720" width="250" height="14" fontSize="8.0" bold="true" hTextAlign="Center">
+				<text><![CDATA[Solicitante]]></text>
+			</element>
+			<element kind="staticText" uuid="d37f8176-845b-4659-b2b9-dbc4d80ffa51" x="92" y="10" width="352" height="59" fontName="Roboto" fontSize="13.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="rectangle" uuid="5ba21bfe-8c66-4d70-8ca9-6140764bfd2e" mode="Transparent" x="444" y="10" width="94" height="60" forecolor="#4F81BD">
+				<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<pen lineWidth="1.0" lineColor="#4F81BD"/>
+			</element>
+			<element kind="rectangle" uuid="a787ae5a-c8b6-4d34-8c5f-25e21aac65ba" mode="Transparent" x="0" y="10" width="91" height="60" forecolor="#045ECC">
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<pen lineWidth="1.0" lineColor="#4F81BD"/>
+			</element>
+			<element kind="image" uuid="95bc24ab-88bf-4fc2-9c81-b7932fa1ac4a" x="13" y="11" width="60" height="69">
+				<expression><![CDATA[$P{logoUap}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="image" uuid="c81d1e9d-b3a8-4827-8cc2-d8c72aede409" x="470" y="10" width="50" height="59">
+				<expression><![CDATA[$P{Dtic}]]></expression>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

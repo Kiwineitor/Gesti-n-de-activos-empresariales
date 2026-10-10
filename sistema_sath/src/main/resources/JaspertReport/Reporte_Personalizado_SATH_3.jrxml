@@ -1,0 +1,154 @@
+<!-- Reporte_Personalizado_SATH_3 — JR 7.x format. Filtro: id_tipo_servicio. BD legacy. -->
+<jasperReport name="Reporte_Personalizado_SATH_3" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3d4e5f6-a7b8-9012-cdef-123456789012">
+	<parameter name="fecha_inicial"    class="java.util.Date"/>
+	<parameter name="fecha_final"      class="java.util.Date"/>
+	<parameter name="id_usuario"       class="java.lang.Long"/>
+	<parameter name="id_tipo_servicio" class="java.lang.Long"/>
+	<parameter name="logoUAP"          class="java.io.InputStream"/>
+	<parameter name="logoUSIC"         class="java.io.InputStream"/>
+	<query language="sql"><![CDATA[SELECT
+    COALESCE(usr_info.nom_completo_u, 'Sistema SATH') AS nom_completo_usuario,
+    COALESCE(usr_info.cargo_u, '—')                   AS cargo_usuario,
+    s.id_servicio                                      AS numero_servicio,
+    concat(p.nombre,' ',p.ap_paterno,' ', p.ap_materno) AS nombre_completo,
+    u.unidad, c.cargo, a.cod_equipo, t.equipo, a.descripcion,
+    COALESCE(t2.nom_tipo_servicio, 'MANTENIMIENTO CORRECTIVO') AS nom_tipo_servicio,
+    s.fecha_recepcion, s.fecha_entrega
+FROM servicio s
+LEFT JOIN persona p         ON p.id_persona        = s.id_persona
+LEFT JOIN tipoequipo t      ON t.id_tipoequipo     = s.id_tipoequipo
+LEFT JOIN almacen a         ON a.id_almacen        = s.id_almacen
+LEFT JOIN procedencia p2    ON p2.id_procedencia   = s.id_procedencia
+LEFT JOIN unidad u          ON u.id_unidad         = p.id_unidad
+LEFT JOIN cargo c           ON c.id_cargo          = p.id_cargo
+LEFT JOIN grado_academico ga ON ga.id_grado_academico = p.id_grado_academico
+LEFT JOIN tiposervicio t2   ON t2.id_tipo_servicio = s.id_tipo_servicio
+LEFT JOIN (
+    SELECT concat(ga2.sigla_grado_academico,'',pu.nombre,' ', pu.ap_paterno,' ',pu.ap_materno) AS nom_completo_u,
+           cu.cargo AS cargo_u
+    FROM usuario usr2
+    LEFT JOIN persona pu          ON pu.id_persona         = usr2.id_persona
+    LEFT JOIN grado_academico ga2 ON ga2.id_grado_academico = pu.id_grado_academico
+    LEFT JOIN cargo cu            ON cu.id_cargo            = pu.id_cargo
+    WHERE usr2.id_usuario = $P{id_usuario}
+      AND (usr2.estado = 'A' OR usr2.estado = 'S')
+    LIMIT 1
+) AS usr_info ON TRUE
+WHERE s.estado_servicio = 'T'
+  AND (s.id_tipo_servicio IS NULL OR s.id_tipo_servicio = $P{id_tipo_servicio})
+  AND s.fecha_recepcion BETWEEN $P{fecha_inicial} AND $P{fecha_final}
+ORDER BY s.fecha_recepcion]]></query>
+	<field name="nom_completo_usuario" class="java.lang.String"/>
+	<field name="cargo_usuario"        class="java.lang.String"/>
+	<field name="numero_servicio"      class="java.lang.Long"/>
+	<field name="nombre_completo"      class="java.lang.String"/>
+	<field name="unidad"               class="java.lang.String"/>
+	<field name="cargo"                class="java.lang.String"/>
+	<field name="cod_equipo"           class="java.lang.String"/>
+	<field name="equipo"               class="java.lang.String"/>
+	<field name="descripcion"          class="java.lang.String"/>
+	<field name="nom_tipo_servicio"    class="java.lang.String"/>
+	<field name="fecha_recepcion"      class="java.sql.Timestamp"/>
+	<field name="fecha_entrega"        class="java.sql.Timestamp"/>
+	<variable name="FILA" calculation="Count" class="java.lang.Integer">
+		<expression><![CDATA[Integer.valueOf(1)]]></expression>
+	</variable>
+	<background/>
+	<columnHeader height="103" splitType="Stretch">
+		<element kind="rectangle" uuid="8a75807d-6831-4d3a-822e-50e7ad15336f" x="0" y="0" width="752" height="60"/>
+		<element kind="rectangle" uuid="a857bd56-e700-4473-b676-47e1e4fe329a" x="68" y="0" width="616" height="60"/>
+		<element kind="staticText" uuid="d569ae09-795e-4fe5-a92a-e3ee2db943b9" x="70" y="5" width="612" height="50" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[REPORTE PERSONALIZADO
+SISTEMA DE ATENCIÓN DE HARDWARE (SATH)]]></text>
+		</element>
+		<element kind="image" uuid="d9579768-23c6-4fab-8489-8974d95579ff" x="6" y="2" width="59" height="56" hImageAlign="Center" vImageAlign="Middle">
+			<expression><![CDATA[$P{logoUAP}]]></expression>
+		</element>
+		<element kind="image" uuid="01637280-0664-44b7-bcdb-ec5debe17cb1" x="690" y="3" width="55" height="55" hImageAlign="Center" vImageAlign="Middle">
+			<expression><![CDATA[$P{logoUSIC}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7d8d2db7-4ea5-4aef-af75-3e46662fae5b" x="0" y="63" width="60" height="10" fontSize="5.5" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Fecha Reporte:]]></text>
+		</element>
+		<element kind="textField" uuid="7dd352a4-d70b-494e-990f-70444ddeb282" x="62" y="63" width="140" height="10" fontSize="5.5" vTextAlign="Middle" pattern="dd-MM-yyyy HH:mm">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="staticText" uuid="b9f5766f-2890-41fa-906d-700dc74539d4" x="0" y="75" width="60" height="10" fontSize="5.5" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Usuario:]]></text>
+		</element>
+		<element kind="textField" uuid="ae1fda4d-9cd1-4c29-aca7-3281d07f4e62" x="62" y="75" width="350" height="10" fontSize="5.5" blankWhenNull="true" vTextAlign="Middle">
+			<expression><![CDATA[$F{nom_completo_usuario}]]></expression>
+		</element>
+		<element kind="rectangle" uuid="b2679b89-327e-4e58-b8c1-72fe753104b1" mode="Opaque" x="0" y="88" width="752" height="15" backcolor="#BFE1FF"/>
+		<element kind="staticText" uuid="a36edce8-6a96-48df-9ec7-a5e303766f66" x="0"   y="88" width="20"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[N°]]></text></element>
+		<element kind="staticText" uuid="ebea23df-9ef3-44ef-bf84-4dc393365272" x="20"  y="88" width="88"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[NOMBRE COMPLETO]]></text></element>
+		<element kind="staticText" uuid="c91043ec-2fc5-4c8f-82ec-d2052966bd12" x="108" y="88" width="108" height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[UNIDAD FUNCIONAL]]></text></element>
+		<element kind="staticText" uuid="b0b52964-b76c-4a84-a247-8a21e7ebab41" x="216" y="88" width="100" height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[CARGO]]></text></element>
+		<element kind="staticText" uuid="74424340-7b05-499c-8f6f-96585e39d558" x="316" y="88" width="76"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[CODIGO EQUIPO]]></text></element>
+		<element kind="staticText" uuid="fe2f6f22-43d3-4031-b31a-b4197514dca2" x="392" y="88" width="60"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[TIPO DE EQUIPO]]></text></element>
+		<element kind="staticText" uuid="df892ed6-47c0-4544-aca0-e1b1aa52fd6d" x="452" y="88" width="150" height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[DESCRIPCION]]></text></element>
+		<element kind="staticText" uuid="a5fa2ad1-d7bc-4407-80c6-527bc3ffdb34" x="602" y="88" width="70"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[TIPO DE SERVICIO]]></text></element>
+		<element kind="staticText" uuid="777b15e9-cccc-4a07-8218-60a057965853" x="672" y="88" width="40"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[F. RECEPCION]]></text></element>
+		<element kind="staticText" uuid="25ff2598-60ca-496b-aee3-bd64533aea54" x="712" y="88" width="40"  height="15" fontSize="5.5" bold="true" hTextAlign="Center" vTextAlign="Middle"><text><![CDATA[F. ENTREGA]]></text></element>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="8afcd627-c397-438b-9d80-31c2cd33b6aa" x="0"   y="0" width="20"  height="20" fontSize="5.5" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$V{FILA}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="a33ed091-7994-424d-a6aa-ffa7c11f7109" x="20"  y="0" width="88"  height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{nombre_completo}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="ba6af867-7e3b-4781-81e1-2ff33f127e1b" x="108" y="0" width="108" height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{unidad}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="1816f11e-f8f6-439f-995a-5411121f4ae1" x="216" y="0" width="100" height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{cargo}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="b8f6abad-019e-4e36-9efa-da7e259b8cbf" x="316" y="0" width="76"  height="20" fontSize="5.5" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{cod_equipo}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="f0bfbba3-f676-40d3-beaf-b0c31a69a0c9" x="392" y="0" width="60"  height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{equipo}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="05229a8d-0588-4da2-9d88-ee3b7e789c4e" x="452" y="0" width="150" height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{descripcion}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="b0872457-29fe-4c63-826a-9f82229ce628" x="602" y="0" width="70"  height="20" fontSize="5.5" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{nom_tipo_servicio}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="73b397e0-75ac-467a-9551-fb8f4e752233" x="672" y="0" width="40"  height="20" fontSize="5.5" pattern="dd-MM-yyyy" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{fecha_recepcion}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" uuid="ccb47675-a985-4e73-8146-50716ddabd51" x="712" y="0" width="40"  height="20" fontSize="5.5" pattern="dd-MM-yyyy" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{fecha_entrega}]]></expression>
+				<box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="14" splitType="Stretch">
+		<element kind="textField" uuid="5578656c-299e-4ac9-bf27-d25076db77cf" x="640" y="2" width="50" height="12" fontSize="6.0" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="00e969f5-98d3-47da-bfcf-d538496ff44f" x="690" y="2" width="62" height="12" fontSize="6.0" evaluationTime="Report" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA[" de " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</columnFooter>
+	<summary height="20" splitType="Stretch">
+		<element kind="staticText" uuid="f5b2df3d-0fb1-417d-94f2-9c1c4d6d4f94" mode="Opaque" x="0" y="0" width="340" height="20" backcolor="#F0F8FF" fontSize="7.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[  TOTAL DE SERVICIOS ATENDIDOS EN EL PERIODO: ]]></text>
+		</element>
+		<element kind="textField" uuid="e964571d-c87b-45e6-a86d-c1dfb601bfd4" mode="Opaque" x="340" y="0" width="60" height="20" backcolor="#F0F8FF" fontSize="7.0" evaluationTime="Report" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA[$V{FILA}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

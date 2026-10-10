@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="icon" type="image/png" href="/images/Logo_Sath_Bn.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SATH</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+    />
+
+    <!-- CSS del template (servidos desde public/ sin necesidad del backend) -->
+    <link rel="stylesheet" href="/assets/css/perfect-scrollbar.min.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
+    <link rel="stylesheet" href="/assets/css/animate.css"/>
+    <link rel="stylesheet" href="/assets/css/sath-custom.css"/>
+    <link rel="stylesheet" href="/assets/css/nice-select2.css"/>
+
+    <style>
+        /* Prevención de parpadeo blanco (Flash of Unstyled Content) */
+        html, body {
+            background-color: #0d0d1a !important; /* Fondo por defecto oscuro (igual al login) */
+            margin: 0;
+            height: 100%;
+        }
+        html.light, html.light body {
+            background-color: #fafafa !important; /* Fondo para modo claro */
+        }
+    </style>
+
+    <script>
+        /**
+         * Script bloqueante para detectar el tema antes de que se pinte el body.
+         * Sincronizado con la lógica de appStore (Pinia).
+         */
+        (function() {
+            try {
+                var theme = JSON.parse(localStorage.getItem('_x_theme') || '"light"');
+                var isDarkMode = JSON.parse(localStorage.getItem('_x_isDarkMode') || 'false');
+                var isDark = theme === 'dark' || 
+                            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) || 
+                            isDarkMode;
+                
+                // Si estamos en el login, forzamos apariencia oscura para evitar el flash blanco
+                var isLogin = window.location.pathname.includes('/login');
+
+                if (isDark || isLogin) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.add('light');
+                }
+            } catch (e) {
+                console.error('Theme detection failed', e);
+            }
+        })();
+    </script>
+
+    <!-- PerfectScrollbar necesita cargarse antes del app -->
+    <script src="/assets/js/perfect-scrollbar.min.js"></script>
+</head>
+<!-- Las clases base las aplica el store al body en runtime.
+     Ponemos font-nunito aquí para que aplique desde el inicio. -->
+<body class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased vertical full ltr">
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
