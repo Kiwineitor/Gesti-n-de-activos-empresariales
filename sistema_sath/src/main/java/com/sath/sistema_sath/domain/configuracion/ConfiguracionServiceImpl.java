@@ -14,8 +14,8 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     public static final String CLAVE_NOMBRE_AUTORIZADO = "reporte.autorizado.nombre";
     public static final String CLAVE_CARGO_AUTORIZADO  = "reporte.autorizado.cargo";
 
-    public static final String NOMBRE_AUTORIZADO_POR_DEFECTO = "Lic. Eduardo Zubieta Copeticon";
-    public static final String CARGO_AUTORIZADO_POR_DEFECTO  = "JEFE a.i DIRECCION DE TECNOLOGIA, INFORMACION Y COMUNICACION";
+    public static final String NOMBRE_AUTORIZADO_POR_DEFECTO = "Responsable de Soporte Técnico";
+    public static final String CARGO_AUTORIZADO_POR_DEFECTO  = "JEFE DE SOPORTE TÉCNICO";
 
     private final ConfiguracionRepository configuracionRepository;
     private final UnidadRepository unidadRepository;
@@ -23,7 +23,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     @Override
     public String obtenerValor(String clave, String valorPorDefecto) {
         Configuracion config = configuracionRepository
-                .findByUnidad_IdUnidadAndClave(obtenerUnidadDtic().getIdUnidad(), clave)
+                .findByUnidad_IdUnidadAndClave(obtenerUnidadSoporte().getIdUnidad(), clave)
                 .orElse(null);
         return (config == null || config.getValor() == null || config.getValor().isBlank())
                 ? valorPorDefecto
@@ -40,18 +40,18 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     @Override
     @Transactional
     public ConfiguracionReporteDto guardarValores(String nombreAutorizado, String cargoAutorizado) {
-        Unidad dtic = obtenerUnidadDtic();
-        guardar(dtic, CLAVE_NOMBRE_AUTORIZADO, nombreAutorizado);
-        guardar(dtic, CLAVE_CARGO_AUTORIZADO, cargoAutorizado);
+        Unidad soporte = obtenerUnidadSoporte();
+        guardar(soporte, CLAVE_NOMBRE_AUTORIZADO, nombreAutorizado);
+        guardar(soporte, CLAVE_CARGO_AUTORIZADO, cargoAutorizado);
         return obtenerConfiguracionReportes();
     }
 
-    private void guardar(Unidad dtic, String clave, String valor) {
+    private void guardar(Unidad soporte, String clave, String valor) {
         Configuracion config = configuracionRepository
-                .findByUnidad_IdUnidadAndClave(dtic.getIdUnidad(), clave)
+                .findByUnidad_IdUnidadAndClave(soporte.getIdUnidad(), clave)
                 .orElseGet(() -> {
                     Configuracion nueva = new Configuracion();
-                    nueva.setUnidad(dtic);
+                    nueva.setUnidad(soporte);
                     nueva.setClave(clave);
                     return nueva;
                 });
@@ -59,9 +59,8 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
         configuracionRepository.save(config);
     }
 
-    private Unidad obtenerUnidadDtic() {
-        return unidadRepository.findFirstByNombreUniContainsIgnoreCaseAndNombreUniContainsIgnoreCase("TECNOLOG", "INFORMACI")
-                .orElseGet(() -> unidadRepository.findFirstByNombreUniContainsIgnoreCase("TECNOLOG")
-                        .orElseThrow(() -> new IllegalStateException("No se encontró la unidad DTIC para la configuración de reportes")));
+    private Unidad obtenerUnidadSoporte() {
+        return unidadRepository.findFirstByNombreUniContainsIgnoreCase("SOPORTE")
+                .orElseThrow(() -> new IllegalStateException("No se encontró la unidad de Soporte Técnico para la configuración de reportes"));
     }
 }

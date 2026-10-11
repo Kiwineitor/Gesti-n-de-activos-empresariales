@@ -32,7 +32,7 @@ const crearFallaAbierto   = ref(false)
 const nuevaFalla          = ref({ nombreFall: '', idTipoActivo: '' })
 const guardandoNuevaFalla = ref(false)
 
-// ── Crear tipo de activo inline ───────────────────────────────────
+// ── Crear tipo de recurso inline ───────────────────────────────────
 const crearTipoActAbierto   = ref(false)
 const nuevoTipoActNombre    = ref('')
 const guardandoNuevoTipoAct = ref(false)
@@ -204,7 +204,7 @@ async function guardarNuevaFalla() {
   } catch (e) { toast(e.message, 'error') } finally { guardandoNuevaFalla.value = false }
 }
 
-// ── Tipo de activo inline ─────────────────────────────────────────
+// ── Tipo de recurso inline ─────────────────────────────────────────
 function toggleCrearTipoAct() {
   crearTipoActAbierto.value = !crearTipoActAbierto.value
   if (crearTipoActAbierto.value) nuevoTipoActNombre.value = ''
@@ -489,7 +489,7 @@ function etiquetaPrioridad(valor) {
             </div>
             <div>
               <h5 class="font-bold text-base dark:text-white-light">
-                {{ item?.idAtencion ? 'Ver atención' : 'Atender equipo' }}
+                {{ item?.idAtencion ? 'Ver atención' : 'Atender recurso' }}
               </h5>
               <p class="text-xs text-white-dark mt-0.5">{{ item?.nroSolicitud || '' }}</p>
             </div>
@@ -506,7 +506,7 @@ function etiquetaPrioridad(valor) {
         <!-- Body scrollable -->
         <div class="flex-1 overflow-y-auto px-6 py-6 space-y-5">
 
-          <!-- Info del equipo -->
+          <!-- Info del recurso -->
           <div class="rounded-xl bg-white-light/50 dark:bg-[#1b2e4b] p-4 space-y-3">
             <div class="flex items-start justify-between gap-2">
               <div>
@@ -564,7 +564,7 @@ function etiquetaPrioridad(valor) {
                     class="form-select text-sm flex-1"
                     @change="cargarFallasPorTipo(tipoFallaSeleccionado)"
                   >
-                    <option value="">— Tipo de equipo —</option>
+                    <option value="">— Tipo de recurso —</option>
                     <option v-for="t in tiposActivo" :key="t.idTipoActivo" :value="String(t.idTipoActivo)">
                       {{ t.nombreTipoAct }}
                     </option>
@@ -599,10 +599,10 @@ function etiquetaPrioridad(valor) {
 
                 <div v-if="cargandoFallas" class="text-sm text-white-dark animate-pulse">Cargando fallas...</div>
                 <div v-else-if="!tipoFallaSeleccionado && !crearFallaAbierto" class="text-sm text-white-dark italic">
-                  Selecciona un tipo de equipo para ver sus fallas.
+                  Selecciona un tipo de recurso para ver sus fallas.
                 </div>
                 <div v-else-if="tipoFallaSeleccionado && fallasDisponibles.length === 0 && !crearFallaAbierto" class="text-sm text-white-dark italic">
-                  No hay fallas catalogadas para este tipo de equipo.
+                  No hay fallas catalogadas para este tipo de recurso.
                 </div>
                 <div v-else-if="fallasDisponibles.length > 0 && fallasFiltradas.length === 0" class="text-sm text-white-dark italic">
                   Sin resultados para "{{ buscarFalla }}".
@@ -631,7 +631,7 @@ function etiquetaPrioridad(valor) {
                       placeholder="Nombre (ej: Pantalla dañada)" autocomplete="off"
                       @keydown.enter.prevent="guardarNuevaFalla" />
                     <select v-model="nuevaFalla.idTipoActivo" class="form-select text-sm">
-                      <option value="">— Tipo de equipo (opcional) —</option>
+                      <option value="">— Tipo de recurso (opcional) —</option>
                       <option v-for="t in tiposActivo" :key="t.idTipoActivo" :value="String(t.idTipoActivo)">{{ t.nombreTipoAct }}</option>
                     </select>
                     <div class="flex justify-end gap-2">

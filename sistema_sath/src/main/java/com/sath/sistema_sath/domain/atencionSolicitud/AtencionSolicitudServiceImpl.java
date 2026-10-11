@@ -1,7 +1,6 @@
 package com.sath.sistema_sath.domain.atencionSolicitud;
 
 import com.sath.sistema_sath.Config.Enum.EstadoEnum;
-import com.sath.sistema_sath.SolicitudLondra.LondraNotificacionService;
 import com.sath.sistema_sath.tools.colas.ColaPriorizadaSolicitudes;
 import com.sath.sistema_sath.tools.reportes.ReporteGenericoRepository;
 import com.sath.sistema_sath.domain.administrativo.Administrativo;
@@ -42,7 +41,6 @@ public class AtencionSolicitudServiceImpl implements AtencionSolicitudService {
     private final DetalleSolicitudRepository detalleRepo;
     private final FallaReportadaRepository fallaReportadaRepo;
     private final FallaRepository fallaRepo;
-    private final LondraNotificacionService londraNotificacionService;
     private final AtencionSolicitudMapper mapper;
     private final ColaPriorizadaSolicitudes colaPriorizada;
     private final SolicitudMapper solicitudMapper;
@@ -126,7 +124,7 @@ public class AtencionSolicitudServiceImpl implements AtencionSolicitudService {
                         .orElseThrow(() -> new IllegalArgumentException("Falla no encontrada: " + dto.idsFallas().get(idx)));
 
                 if (i == 0 && dto.idFallaReportada() != null) {
-                    // Primera falla: cataloga la FallaReportada existente (la que vino de Londra)
+                    // Primera falla: cataloga la FallaReportada existente
                     FallaReportada fr = fallaReportadaRepo.findById(dto.idFallaReportada())
                             .orElseThrow(() -> new IllegalArgumentException("FallaReportada no encontrada: " + dto.idFallaReportada()));
                     fr.setFalla(falla);
@@ -140,20 +138,6 @@ public class AtencionSolicitudServiceImpl implements AtencionSolicitudService {
                     fallaReportadaRepo.save(nueva);
                     log.info("FallaReportada adicional '{}' creada para detalle {}", falla.getNombreFall(), dto.idDetalleSolicitud());
                 }
-            }
-
-            try {
-                Solicitud solicitud = saved.getDetalleSolicitud().getSolicitud();
-                if (solicitud != null && solicitud.getMantIdLondra() != null) {
-                    Falla primera = fallaRepo.findById(dto.idsFallas().get(0)).orElse(null);
-                    if (primera != null) {
-                        int posicion = colaPriorizada.calcularPosicionGlobal(solicitud.getIdSolicitud());
-                        londraNotificacionService.notificarCatalogacion(
-                                solicitud.getMantIdLondra(), primera.getNombreFall(), posicion);
-                    }
-                }
-            } catch (Exception e) {
-                log.warn("No se pudo notificar catalogación a Londra: {}", e.getMessage());
             }
         }
 

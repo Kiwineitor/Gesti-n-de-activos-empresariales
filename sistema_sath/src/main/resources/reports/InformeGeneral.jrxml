@@ -1,9 +1,9 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
 <jasperReport name="InformeGeneral" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="ae3f1c2d-1234-4abc-9def-000000000002">
 	<parameter name="IdInformeGeneral" class="java.lang.Long"/>
-	<parameter name="logoUap" class="java.io.InputStream"/>
-	<parameter name="Dtic" class="java.io.InputStream"/>
-	<parameter name="Membrete_Informes" class="java.io.InputStream"/>
+	<parameter name="logoPrincipal" class="java.io.InputStream"/>
+	<parameter name="logoSecundario" class="java.io.InputStream"/>
+	<parameter name="membrete" class="java.io.InputStream"/>
 	<query language="sql"><![CDATA[
 SELECT
     ieg.nro_informe                                                                              AS nroinformetext,
@@ -61,7 +61,7 @@ GROUP BY ieg.nro_informe, ieg.observaciones, ieg.trabajo_realizado, ieg.fecha_ci
 				<pen lineWidth="1.0" lineColor="#4F81BD"/>
 			</element>
 			<element kind="staticText" uuid="0000ae02-0000-0000-0001-000000000002" x="92" y="10" width="352" height="59" fontName="Roboto" fontSize="13.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+				<text><![CDATA[ORGANIZACIÓN DEMO]]></text>
 			</element>
 			<element kind="rectangle" uuid="0000ae02-0000-0000-0001-000000000003" mode="Transparent" x="444" y="10" width="94" height="60" forecolor="#4F81BD">
 				<pen lineWidth="1.0" lineColor="#4F81BD"/>
@@ -70,10 +70,10 @@ GROUP BY ieg.nro_informe, ieg.observaciones, ieg.trabajo_realizado, ieg.fecha_ci
 				<pen lineWidth="1.0" lineColor="#4F81BD"/>
 			</element>
 			<element kind="image" uuid="0000ae02-0000-0000-0001-000000000005" x="13" y="11" width="60" height="59">
-				<expression><![CDATA[$P{logoUap}]]></expression>
+				<expression><![CDATA[$P{logoPrincipal}]]></expression>
 			</element>
 			<element kind="image" uuid="0000ae02-0000-0000-0001-000000000006" x="470" y="10" width="50" height="59">
-				<expression><![CDATA[$P{Dtic}]]></expression>
+				<expression><![CDATA[$P{logoSecundario}]]></expression>
 			</element>
 			<element kind="staticText" uuid="0000ae02-0000-0000-0000-000000000002" x="0" y="80" width="535" height="22" fontSize="13.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 				<text><![CDATA[INFORME TÉCNICO GENERAL]]></text>
@@ -134,7 +134,7 @@ GROUP BY ieg.nro_informe, ieg.observaciones, ieg.trabajo_realizado, ieg.fecha_ci
 				<expression><![CDATA[$F{cargo}]]></expression>
 			</element>
 			<element kind="staticText" uuid="0000ae02-0000-0000-0000-000000000019" mode="Opaque" x="0" y="230" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[EQUIPOS ATENDIDOS]]></text>
+				<text><![CDATA[RECURSOS ATENDIDOS]]></text>
 			</element>
 			<element kind="textField" uuid="0000ae02-0000-0000-0000-000000000020" x="0" y="248" width="535" height="60" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
 				<expression><![CDATA[$F{equipos}]]></expression>

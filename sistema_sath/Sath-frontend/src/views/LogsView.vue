@@ -85,7 +85,7 @@ async function descargarLogDia() {
     return
   }
   const cd = res.headers.get('Content-Disposition') || ''
-  const nombre = cd.match(/filename="?([^"]+)!?/)?.[1] || "sath.log"
+  const nombre = cd.match(/filename="?([^"]+)!?/)?.[1] || "servicedesk.log"
   const blob = await res.blob()
   const r = await descargarArchivo(blob, nombre)
   if (r?.mensaje) toast(r.mensaje, 'success')
@@ -141,14 +141,14 @@ function exportarTxt() {
               (l.stackTrace ? '\n' + l.stackTrace : ''),
       )
       .join('\n\n')
-  _blob(txt, `logs_sath_${ts}.txt`, 'text/plain')
+  _blob(txt, `logs_servicedesk_${ts}.txt`, 'text/plain')
   toast('Exportado como TXT', 'success')
 }
 
 function exportarJson() {
   exportMenu.value = false
   const ts = new Date().toISOString().slice(0, 10)
-  _blob(JSON.stringify(logs.value, null, 2), `logs_sath_${ts}.json`, 'application/json')
+  _blob(JSON.stringify(logs.value, null, 2), `logs_servicedesk_${ts}.json`, 'application/json')
   toast('Exportado como JSON', 'success')
 }
 
@@ -160,7 +160,7 @@ function exportarCsv() {
   const fil = logs.value.map((l) =>
       [l.id, l.fecha, l.nivel, l.usuario, l.logger, l.mensaje, l.stackTrace].map(esc).join(','),
   )
-  _blob([cab, ...fil].join('\n'), `logs_sath_${ts}.csv`, 'text/csv')
+  _blob([cab, ...fil].join('\n'), `logs_servicedesk_${ts}.csv`, 'text/csv')
   toast('Exportado como CSV', 'success')
 }
 

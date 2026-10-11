@@ -12,10 +12,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
 
     List<Solicitud> findByEstadoSolOrderByIdSolicitudAsc(EstadoSolicitudEnum estadoSol);
 
-    @Query("SELECT s.idSolicitud AS idSolicitud, s.mantIdLondra AS mantIdLondra " +
-           "FROM Solicitud s WHERE s.estadoSol = :estado ORDER BY s.idSolicitud ASC")
-    List<SolicitudLondraView> findLondraViewByEstadoSolOrderByIdSolicitudAsc(
-            @Param("estado") EstadoSolicitudEnum estado);
 
     @Query(value = """
             
@@ -34,8 +30,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     @Query("SELECT COUNT(s) > 0 FROM Solicitud s WHERE s.nroSolExterna = :nroSolExterna")
     boolean existsByNroSolExterna(@Param("nroSolExterna") String nroSolExterna);
 
-    @Query("SELECT COUNT(s) > 0 FROM Solicitud s WHERE s.mantIdLondra = :mantIdLondra")
-    boolean existsByMantIdLondra(@Param("mantIdLondra") Integer mantIdLondra);
 
     @Query("SELECT COUNT(s) FROM Solicitud s WHERE s.gestionSol = :anio")
     long countByGestionSol(@Param("anio") int anio);
@@ -44,7 +38,7 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
             select s.id_solicitud     as "idSolicitud",
                    s.estado_sol       as "estadoSol",
                    s.nro_sol          as "nroSol",
-                               s.mant_id_londra as "nroSolExterna",
+                               s.id_externo as "nroSolExterna",
                    s.gestion_sol      as "gestionSol",
                    s.fecha_sol        as "fechaSol",
                    s.descripcion_sol  as "descripcionSol"
@@ -60,7 +54,7 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
                    s.id_solicitud    AS "idSolicitud",
                    s.estado_sol      AS "estadoSol",
                    s.nro_sol         AS "nroSol",
-                   s.mant_id_londra  AS "mantIdLondra",
+                   s.id_externo  AS "idExterno",
                    s.gestion_sol     AS "gestionSol",
                    s.fecha_sol       AS "fechaSol",
                    s.descripcion_sol AS "descripcionSol"

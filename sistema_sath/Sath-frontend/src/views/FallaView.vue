@@ -14,7 +14,7 @@ const { toast } = useToast()
 
 const columns = computed(() => [
   { key: 'nombreFall', label: 'Nombre' },
-  { key: 'nombreTipoAct', label: 'Tipo de Activo', thClass: 'hidden sm:table-cell', tdClass: 'hidden sm:table-cell' },
+  { key: 'nombreTipoAct', label: 'Tipo de Recurso', thClass: 'hidden sm:table-cell', tdClass: 'hidden sm:table-cell' },
   ...(auth.isAdmin ? [{ key: 'acciones', label: 'Acciones', sortable: false, thClass: 'text-center w-32', tdClass: 'text-center' }] : []),
 ])
 
@@ -302,7 +302,7 @@ function nombreTipo(idTipoActivo) {
               </div>
             </div>
             <span v-if="item.nombreTipoAct" class="badge bg-secondary/10 text-secondary text-xs self-start">{{ item.nombreTipoAct }}</span>
-            <span v-else class="text-xs text-white-dark italic">Sin tipo de activo asignado</span>
+            <span v-else class="text-xs text-white-dark italic">Sin tipo de recurso asignado</span>
           </div>
         </div>
       </template>
@@ -342,7 +342,7 @@ function nombreTipo(idTipoActivo) {
                   @keydown.enter.prevent="guardar" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Tipo de Activo</label>
+                <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Tipo de Recurso</label>
                 <SearchSelect
                   v-model="formulario.idTipoActivo"
                   :options="tiposActivo"

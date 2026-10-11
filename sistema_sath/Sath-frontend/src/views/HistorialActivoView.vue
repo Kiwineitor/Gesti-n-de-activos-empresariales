@@ -69,18 +69,18 @@ function badgeClaseEstado(e) {
 <template>
   <ul class="flex space-x-2 rtl:space-x-reverse mb-6">
     <li><RouterLink to="/" class="text-primary hover:underline">Inicio</RouterLink></li>
-    <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2 text-gray-400">Historial de Activo</li>
+    <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2 text-gray-400">Historial de Recurso</li>
   </ul>
 
   <!-- Búsqueda -->
   <div class="panel mb-6">
-    <h5 class="text-lg font-semibold dark:text-white-light/90 mb-4">Historial de Activo</h5>
+    <h5 class="text-lg font-semibold dark:text-white-light/90 mb-4">Historial de Recurso</h5>
     <div class="flex gap-3">
       <input
         v-model="codigoBusqueda"
         type="text"
         class="form-input flex-1"
-        placeholder="Ingresa el código del activo..."
+        placeholder="Ingresa el código del recurso..."
         @keyup.enter="buscar"
       />
       <button class="btn btn-primary" :disabled="cargando" @click="buscar">
@@ -99,7 +99,7 @@ function badgeClaseEstado(e) {
     </div>
 
     <div v-else>
-      <!-- Activo info -->
+      <!-- Recurso info -->
       <div v-if="historial[0]" class="panel mb-6">
         <div class="flex items-center gap-4">
           <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">

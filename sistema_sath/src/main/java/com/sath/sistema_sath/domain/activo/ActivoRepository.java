@@ -77,4 +77,3 @@ public interface ActivoRepository extends JpaRepository<Activo, Long> {
             """, nativeQuery = true)
     List<Map<String, Object>> historialPorCodigoActivo(@Param("codigoActivo") String codigoActivo);
 }
-//sciaf

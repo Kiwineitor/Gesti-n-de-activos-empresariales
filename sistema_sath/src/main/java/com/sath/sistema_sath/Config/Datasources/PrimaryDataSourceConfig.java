@@ -48,7 +48,6 @@ public class PrimaryDataSourceConfig {
                 "com.sath.sistema_sath.domain",
                 "com.sath.sistema_sath.Config.LogSistema",
                 "com.sath.sistema_sath.Config.Auditoria",
-                "com.sath.sistema_sath.SolicitudLondra",
                 "com.sath.sistema_sath.tools"
         );
 

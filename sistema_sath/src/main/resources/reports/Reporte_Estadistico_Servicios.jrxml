@@ -23,11 +23,11 @@ ORDER BY cantidad DESC]]></query>
 	<parameter name="fecha_inicial" class="java.util.Date"/>
 	<parameter name="fecha_final" class="java.util.Date"/>
 	<parameter name="id_administrativo" class="java.lang.Long"/>
-	<parameter name="logoUap" class="java.io.InputStream"/>
-	<parameter name="Dtic" class="java.io.InputStream"/>
+	<parameter name="logoPrincipal" class="java.io.InputStream"/>
+	<parameter name="logoSecundario" class="java.io.InputStream"/>
 	<query language="sql"><![CDATA[SELECT * FROM (
     SELECT DISTINCT ON (so.nro_sol, ds.id_detalle_solicitud)
-        COALESCE(p_adm.nombre_per || ' ' || p_adm.ap_paterno_per || ' ' || COALESCE(p_adm.ap_materno_per, ''), 'Sistema SATH') AS nom_completo_admin,
+        COALESCE(p_adm.nombre_per || ' ' || p_adm.ap_paterno_per || ' ' || COALESCE(p_adm.ap_materno_per, ''), 'Sistema ServiceDesk') AS nom_completo_admin,
         COALESCE(c_adm.nombre_car, '—')                                                                                          AS cargo_admin,
         COALESCE(u_adm.nombre_uni, '—')                                                                                          AS unidad_admin,
         so.nro_sol                                                                                                               AS numero_servicio,
@@ -111,13 +111,13 @@ ORDER BY nom_tipo_servicio, numero_servicio]]></query>
 			<pen lineColor="#045ECC"/>
 		</element>
 		<element kind="image" uuid="e1000001-0001-0001-0001-000000000003" x="4" y="-1" width="55" height="52">
-			<expression><![CDATA[$P{logoUap}]]></expression>
+			<expression><![CDATA[$P{logoPrincipal}]]></expression>
 		</element>
 		<element kind="image" uuid="e1000001-0001-0001-0001-000000000004" x="515" y="-1" width="55" height="52">
-			<expression><![CDATA[$P{Dtic}]]></expression>
+			<expression><![CDATA[$P{logoSecundario}]]></expression>
 		</element>
 		<element kind="staticText" uuid="e1000001-0001-0001-0001-000000000005" x="62" y="-5" width="443" height="20" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+			<text><![CDATA[ORGANIZACIÓN DEMO]]></text>
 			<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 				<pen lineColor="#030303"/>
 				<topPen lineWidth="1.0"/>
@@ -137,7 +137,7 @@ ORDER BY nom_tipo_servicio, numero_servicio]]></query>
 			</box>
 		</element>
 		<element kind="staticText" uuid="e1000001-0001-0001-0001-000000000007" x="62" y="35" width="443" height="21" fontSize="8.5" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[SISTEMA DE ATENCIÓN DE HARDWARE (SATH)]]></text>
+			<text><![CDATA[SERVICEDESK - SISTEMA DE GESTIÓN DE SOLICITUDES]]></text>
 			<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 				<pen lineColor="#030303"/>
 				<topPen lineWidth="1.0"/>
@@ -177,10 +177,10 @@ ORDER BY nom_tipo_servicio, numero_servicio]]></query>
 			<text><![CDATA[UNIDAD]]></text>
 		</element>
 		<element kind="staticText" uuid="e1000001-0001-0001-0001-000000000018" x="278" y="88" width="65" height="7" fontSize="4.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[CÓD. EQUIPO]]></text>
+			<text><![CDATA[CÓD. RECURSO]]></text>
 		</element>
 		<element kind="staticText" uuid="e1000001-0001-0001-0001-000000000019" x="343" y="88" width="70" height="7" fontSize="4.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[TIPO EQUIPO]]></text>
+			<text><![CDATA[TIPO RECURSO]]></text>
 		</element>
 		<element kind="staticText" uuid="e1000001-0001-0001-0001-000000000020" x="413" y="88" width="80" height="7" fontSize="4.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<text><![CDATA[F. RECEPCIÓN]]></text>

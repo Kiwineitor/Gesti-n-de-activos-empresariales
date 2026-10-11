@@ -105,7 +105,7 @@ const informesGenFiltrados = computed(() => {
   )
 })
 
-// ── Reporte General SATH ──────────────────────────────────────────
+// ── Reporte General ServiceDesk ──────────────────────────────────────────
 const rgFechaInicial = ref('')
 const rgFechaFinal = ref('')
 const descargandoRG = ref(false)
@@ -290,7 +290,7 @@ async function descargarFichaServicioWord(s) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// REPORTE PERSONALIZADO SATH
+// REPORTE PERSONALIZADO
 // ═══════════════════════════════════════════════════════════════════
 
 async function cargarFiltrosPersonalizado() {
@@ -378,7 +378,7 @@ async function abrirModalNuevoEsp() {
 
 async function crearInformeEspecifico() {
   if (!formEsp.value.idDetalleSolicitud) {
-    toast('Selecciona un activo', 'error')
+    toast('Selecciona un recurso', 'error')
     return
   }
   guardandoEsp.value = true
@@ -505,7 +505,7 @@ async function descargarInformeGen(id, nro) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// REPORTE GENERAL SATH
+// REPORTE GENERAL
 // ═══════════════════════════════════════════════════════════════════
 
 async function descargarReporteGeneral() {
@@ -526,7 +526,7 @@ async function descargarReporteGeneral() {
       const err = await res?.json().catch(() => ({}))
       throw new Error(err?.message || 'No se pudo generar el reporte')
     }
-    await _descargarBlob(res, `Reporte_SATH_${rgFechaInicial.value}_${rgFechaFinal.value}.pdf`)
+    await _descargarBlob(res, `Reporte_ServiceDesk_${rgFechaInicial.value}_${rgFechaFinal.value}.pdf`)
     toast('Reporte general descargado', 'success')
   } catch (e) {
     toast(e.message, 'error')
@@ -607,7 +607,7 @@ async function descargarReporteExcel() {
       const err = await res?.json().catch(() => ({}))
       throw new Error(err?.message || 'No se pudo generar el Excel')
     }
-    await _descargarBlob(res, `Reporte_SATH_${rgFechaInicial.value}_${rgFechaFinal.value}.xlsx`)
+    await _descargarBlob(res, `Reporte_ServiceDesk_${rgFechaInicial.value}_${rgFechaFinal.value}.xlsx`)
     toast('Reporte Excel descargado', 'success')
   } catch (e) {
     toast(e.message, 'error')
@@ -1037,11 +1037,11 @@ function badgeClase(estado) {
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- Tab: Reporte General SATH                                     -->
+  <!-- Tab: Reporte General ServiceDesk                                     -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div v-if="tabActivo === 'general-sath'" class="panel">
     <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-      <h5 class="text-xl font-bold dark:text-white-light/90">Reporte General SATH</h5>
+      <h5 class="text-xl font-bold dark:text-white-light/90">Reporte General ServiceDesk</h5>
     </div>
 
     <p class="text-white-dark text-sm mb-5">
@@ -1133,11 +1133,11 @@ function badgeClase(estado) {
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- Tab: Reporte Personalizado SATH                               -->
+  <!-- Tab: Reporte Personalizado ServiceDesk                               -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div v-if="tabActivo === 'personalizado'" class="panel">
     <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-      <h5 class="text-xl font-bold dark:text-white-light/90">Reporte Personalizado SATH</h5>
+      <h5 class="text-xl font-bold dark:text-white-light/90">Reporte Personalizado ServiceDesk</h5>
     </div>
     <p class="text-white-dark text-sm mb-5">
       Genera un reporte filtrado por rango de fechas y filtros opcionales.
@@ -1167,7 +1167,7 @@ function badgeClase(estado) {
       </div>
       <div>
         <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">
-          Tipo Activo <span class="normal-case font-normal">(opcional)</span>
+          Tipo de Recurso <span class="normal-case font-normal">(opcional)</span>
         </label>
         <SearchSelect v-model="rpIdTipoActivo" :options="rpTiposActivo" label-key="nombreTipoAct" value-key="idTipoActivo"
           placeholder="Todos los tipos" empty-label="Todos los tipos" empty-value="" />
@@ -1275,15 +1275,15 @@ function badgeClase(estado) {
           <div v-else class="p-5 space-y-4">
             <div>
               <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">
-                Activo <span class="text-danger">*</span>
+                Recurso <span class="text-danger">*</span>
               </label>
               <SearchSelect
                 v-model="formEsp.idDetalleSolicitud"
                 :options="detallesConLabel"
                 label-key="labelDisplay"
                 value-key="idDetalleSolicitud"
-                placeholder="Buscar activo..."
-                empty-label="Seleccionar activo..."
+                placeholder="Buscar recurso..."
+                empty-label="Seleccionar recurso..."
                 empty-value=""
               />
             </div>

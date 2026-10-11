@@ -25,18 +25,18 @@ public class SolicitudPdfService {
     private ConcurrentHashMap<String, byte[]> imagenCache = new ConcurrentHashMap<>();
 
     public byte[] generarPdf(Long idSolicitud) throws Exception {
-        JasperReport compiled = cache.computeIfAbsent("/reports/Solicitud_SATH.jrxml", path -> {
+        JasperReport compiled = cache.computeIfAbsent("/reports/Solicitud.jrxml", path -> {
             try (InputStream is = getClass().getResourceAsStream(path)) {
                 if (is == null) throw new RuntimeException("No se encontró: " + path);
                 return JasperCompileManager.compileReport(is);
             } catch (Exception e) { throw new RuntimeException(e); }
         });
 
-        InputStream logo = getImagen("/imagesForReports/Logo_UAP.png");
+        InputStream logo = getImagen("/imagesForReports/logo_principal.png");
 
         Map<String, Object> params = new HashMap<>();
         params.put("id_solicitud", idSolicitud);
-        params.put("logoUAP", logo);
+        params.put("logoPrincipal", logo);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (Connection con = dataSource.getConnection()) {

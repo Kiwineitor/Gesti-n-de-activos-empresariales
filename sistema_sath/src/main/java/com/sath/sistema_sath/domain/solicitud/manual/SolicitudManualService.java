@@ -70,7 +70,7 @@ public class SolicitudManualService {
         solicitud.setFechaSol(hoy);
         solicitud.setGestionSol(hoy.getYear());
         solicitud.setNroSol(generarNroSolicitud());
-        solicitud.setMantIdLondra(null);
+        solicitud.setIdExterno(null);
         solicitud.setNroSolExterna(null);
         solicitudRepo.save(solicitud);
 
@@ -143,7 +143,7 @@ public class SolicitudManualService {
                 responseDto.fechaSol(),
                 responseDto.descripcionSol(),
                 responseDto.observacionFicha(),
-                responseDto.mantIdLondra(),
+                responseDto.idExterno(),
                 responseDto.nroSolExterna(),
                 posicion
         );

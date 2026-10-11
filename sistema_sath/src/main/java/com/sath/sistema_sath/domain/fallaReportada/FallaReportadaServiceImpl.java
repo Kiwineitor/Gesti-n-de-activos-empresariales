@@ -1,7 +1,6 @@
 package com.sath.sistema_sath.domain.fallaReportada;
 
 import com.sath.sistema_sath.Config.Enum.EstadoEnum;
-import com.sath.sistema_sath.SolicitudLondra.LondraNotificacionService;
 import com.sath.sistema_sath.tools.colas.ColaPriorizadaSolicitudes;
 import com.sath.sistema_sath.domain.detalleSolicitud.DetalleSolicitudRepository;
 import com.sath.sistema_sath.domain.falla.Falla;
@@ -28,7 +27,6 @@ public class FallaReportadaServiceImpl implements FallaReportadaService {
     private final FallaReportadaMapper mapper;
     private final FallaRepository fallaRepository;
     private final DetalleSolicitudRepository detalleSolicitudRepository;
-    private final LondraNotificacionService londraNotificacionService;
     private final ColaPriorizadaSolicitudes colaPriorizada;
 
     @Override
@@ -74,7 +72,6 @@ public class FallaReportadaServiceImpl implements FallaReportadaService {
 
     /**
      * El técnico asigna una Falla del catálogo a una FallaReportada sin categorizar.
-     * Notifica a Londra con la falla catalogada y la posición actual en la cola priorizada.
      */
     @Override
     @Transactional
@@ -88,23 +85,6 @@ public class FallaReportadaServiceImpl implements FallaReportadaService {
         fallaReportada.setFalla(falla);
         FallaReportada saved = repo.save(fallaReportada);
         log.info("FallaReportada {} catalogada como '{}'", idFallaReportada, falla.getNombreFall());
-
-        // Notificar a Londra si la solicitud viene de ahí
-        try {
-            Solicitud solicitud = fallaReportada.getDetalleSolicitud().getSolicitud();
-            if (solicitud != null && solicitud.getMantIdLondra() != null) {
-                int posicion = colaPriorizada.calcularPosicionGlobal(solicitud.getIdSolicitud());
-                londraNotificacionService.notificarCatalogacion(
-                        solicitud.getMantIdLondra(),
-                        falla.getNombreFall(),
-                        posicion
-                );
-            } else {
-                log.debug("Solicitud sin mantIdLondra — no se notifica catalogación a Londra");
-            }
-        } catch (Exception e) {
-            log.warn("No se pudo notificar catalogación a Londra: {}", e.getMessage());
-        }
 
         return mapper.toResponseDto(saved);
     }

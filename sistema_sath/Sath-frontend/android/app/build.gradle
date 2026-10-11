@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "bo.edu.uap.sath"
+    namespace = "com.demo.servicedesk"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "bo.edu.uap.sath"
+        applicationId "com.demo.servicedesk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -51,10 +51,10 @@ async function handleLogin() {
   <div class="login-root">
     <!-- Panel izquierdo: imagen + logo flotante -->
     <div class="panel-imagen">
-      <img class="fondo" src="/images/fondo.png" alt="SATH background" />
+      <img class="fondo" src="/images/fondo.svg" alt="" />
       <div class="logo-sobre-imagen">
         <div class="logo-wrap-central">
-          <img src="/images/Logo_Sath_Bn.png" alt="SATH Logo" />
+          <img src="/images/logo.svg" alt="ServiceDesk" />
         </div>
       </div>
     </div>
@@ -137,6 +137,8 @@ async function handleLogin() {
         </button>
       </form>
 
+      <p class="demo-hint">Demo: usuario <strong>admin</strong> / contraseña <strong>admin123</strong></p>
+
       <div class="login-divider">
         <span>¿No tienes acceso al sistema?</span>
       </div>
@@ -148,7 +150,7 @@ async function handleLogin() {
         Registrar Solicitud Manual
       </router-link>
 
-      <p class="form-footer">SATH © 2026 · Universidad Amazónica de Pando</p>
+      <p class="form-footer">© {{ new Date().getFullYear() }} ServiceDesk · Sistema de Gestión de Solicitudes</p>
     </div>
   </div>
 </template>
@@ -223,6 +225,7 @@ async function handleLogin() {
 
 .logo-wrap-central img {
   width: 100%;
+  max-width: 260px;
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(124, 106, 247, 0.6))
@@ -458,6 +461,18 @@ h1 {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
+/* ── DEMO HINT ── */
+.demo-hint {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+.demo-hint strong {
+  color: #94a3b8;
+  font-weight: 700;
 }
 
 /* ── DIVIDER ── */

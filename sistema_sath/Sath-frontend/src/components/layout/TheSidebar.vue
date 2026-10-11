@@ -29,7 +29,7 @@ const secciones = ref({
 const rutasGestion       = ['/solicitud', '/solicitud/manual', '/atenciones', '/activo', '/historial-activo']
 const rutasOperaciones   = ['/tecnico-asignado', '/administrativo']
 const rutasAdministracion = ['/usuario', '/tipo-servicio', '/servicio', '/tipo-activo', '/falla', '/configuracion']
-const rutasReportes      = ['/dashboard-tecnico', '/reportes', '/reportes-legacy']
+const rutasReportes      = ['/dashboard-tecnico', '/reportes']
 const rutasDeveloper     = ['/logs', '/logs-vue']
 
 function perteneceA(rutas) {
@@ -63,10 +63,7 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
         <!-- Logo -->
         <div class="flex items-center justify-between px-4 py-3 flex-shrink-0">
           <RouterLink to="/" class="main-logo flex shrink-0 items-center">
-            <div class="ml-[5px] w-8 flex-none rounded bg-white p-1 dark:bg-white">
-              <img class="w-full" src="/images/Logo_Head.png" alt="SATH" />
-            </div>
-            <span class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">SATH</span>
+            <img class="ml-[5px] h-9 w-auto flex-none" src="/images/logo-horizontal.svg" alt="ServiceDesk" />
           </RouterLink>
           <button
             class="collapse-icon flex h-10 w-10 items-center justify-center rounded-full transition duration-300 hover:bg-gray-500/10 dark:text-white-light dark:hover:bg-dark-light/10"
@@ -165,7 +162,7 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
                         <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                         <path d="M7 8h10M7 11h7M7 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Activos</span>
+                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Recursos</span>
                     </div>
                   </RouterLink>
                 </li>
@@ -177,7 +174,7 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
                         <path opacity="0.5" d="M3 6C3 4.34315 4.34315 3 6 3H18C19.6569 3 21 4.34315 21 6V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6Z" fill="currentColor"/>
                         <path d="M7 9h10M7 12h7M7 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Historial de Activo</span>
+                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Historial de Recurso</span>
                     </div>
                   </RouterLink>
                 </li>
@@ -319,7 +316,7 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
                         <path opacity="0.5" d="M3 6C3 4.34 4.34 3 6 3H18C19.66 3 21 4.34 21 6V18C21 19.66 19.66 21 18 21H6C4.34 21 3 19.66 3 18V6Z" fill="currentColor"/>
                         <path d="M8 9h8M8 12h5M8 15h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Tipos de Activo</span>
+                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Tipos de Recurso</span>
                     </div>
                   </RouterLink>
                 </li>
@@ -375,7 +372,7 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
                 </li>
 
                 <li class="menu nav-item">
-                  <RouterLink to="/reportes" class="nav-link group min-h-[40px]" :class="{ active: isActive('/reportes') && !isActive('/reportes-legacy') }">
+                  <RouterLink to="/reportes" class="nav-link group min-h-[40px]" :class="{ active: isActive('/reportes') }">
                     <div class="flex items-center">
                       <svg class="shrink-0 group-hover:!text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path d="M4 4C4 2.9 4.9 2 6 2H14L20 8V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V4Z" fill="currentColor" fill-opacity="0.3"/>
@@ -386,20 +383,6 @@ const showReportes       = computed(() => auth.hasModuloAccess('REPORTES') || au
                     </div>
                   </RouterLink>
                 </li>
-
-<!--                <li class="menu nav-item">-->
-<!--                  <RouterLink to="/reportes-legacy" class="nav-link group min-h-[40px]" :class="{ active: isActive('/reportes-legacy') }">-->
-<!--                    <div class="flex items-center">-->
-<!--                      <svg class="shrink-0 group-hover:!text-warning" width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-<!--                        <path d="M4 4C4 2.9 4.9 2 6 2H14L20 8V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V4Z" fill="currentColor" fill-opacity="0.2"/>-->
-<!--                        <path d="M14 2L20 8H14V2Z" fill="currentColor" fill-opacity="0.4"/>-->
-<!--                        <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>-->
-<!--                      </svg>-->
-<!--                      <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Reportes Descontinuados</span>-->
-<!--                    </div>-->
-<!--                  </RouterLink>-->
-<!--                </li>-->
-
               </ul>
             </Transition>
           </li>

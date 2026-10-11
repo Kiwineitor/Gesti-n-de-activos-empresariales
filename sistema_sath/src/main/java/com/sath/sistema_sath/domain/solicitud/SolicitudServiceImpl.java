@@ -1,7 +1,6 @@
 package com.sath.sistema_sath.domain.solicitud;
 
 import com.sath.sistema_sath.Config.Enum.EstadoEnum;
-import com.sath.sistema_sath.SolicitudLondra.LondraNotificacionService;
 import com.sath.sistema_sath.domain.notificacion.NotificacionService;
 import com.sath.sistema_sath.tools.colas.ColaPriorizadaSolicitudes;
 import com.sath.sistema_sath.domain.InformeEquipoEspecifico.InformeEquipoEspecificoRepository;
@@ -38,7 +37,6 @@ public class SolicitudServiceImpl implements SolicitudService {
     private final SolicitudMapper mapper;
     private final SimpMessagingTemplate messagingTemplate;
     private final ColaSolicitudes colaSolicitudes;
-    private final LondraNotificacionService londraNotificacionService;
     private final ColaPriorizadaSolicitudes colaPriorizada;
     private final NotificacionService notificacionService;
     private final ApplicationEventPublisher publisher;
@@ -89,7 +87,7 @@ public class SolicitudServiceImpl implements SolicitudService {
             }
             return new SolicitudResponseDto(
                     s.idSolicitud(), s.estadoSol(), s.nroSol(), s.gestionSol(),
-                    s.fechaSol(), s.descripcionSol(), s.observacionFicha(), s.mantIdLondra(), s.nroSolExterna(),
+                    s.fechaSol(), s.descripcionSol(), s.observacionFicha(), s.idExterno(), s.nroSolExterna(),
                     pos
             );
         }).toList();
@@ -160,19 +158,6 @@ public class SolicitudServiceImpl implements SolicitudService {
             return;
         }
 
-        try {
-//            log.info("📋 Estado cambiado:\n{}",
-//                    objectMapper.writerWithDefaultPrettyPrinter()
-//                            .writeValueAsString(Map.of(
-//                                    "idSolicitud", id,
-//                                    "estadoAnterior", estadoActual.name(),
-//                                    "nuevoEstado", nuevoEstado.name(),
-//                                    "mantIdLondra", solicitud.getMantIdLondra() != null ? solicitud.getMantIdLondra() : "null"
-//                            )));
-        } catch (Exception e) {
-            log.error("Error serializando log: {}", e.getMessage());
-        }
-
         solicitud.setEstadoSol(nuevoEstado);
         Solicitud guardada = repo.save(solicitud);
 
@@ -194,39 +179,9 @@ public class SolicitudServiceImpl implements SolicitudService {
 
         publisher.publishEvent(new EstadoCambiadoEvent(responseDto, nuevoEstado));
 
-        // Al pasar a EN_MANTENIMIENTO: armar array completo y mandar un solo POST a Londra
+        // Al pasar a EN_MANTENIMIENTO: sale de la cola de pendientes
         if (nuevoEstado == EstadoSolicitudEnum.EN_MANTENIMIENTO) {
-            colaSolicitudes.remover(id); // primero removés al que sale
-
-            List<Map<String, Object>> payloads = new ArrayList<>();
-
-            // 1️⃣ El que salió → EN_MANTENIMIENTO, Cola: 0
-            if (solicitud.getMantIdLondra() != null) {
-                Map<String, Object> salio = new LinkedHashMap<>();
-                salio.put("mant_id", solicitud.getMantIdLondra());
-                salio.put("Estado", "EN_MANTENIMIENTO");
-                salio.put("Cola", 0);
-                salio.put("Observacion", dto.observacion() != null ? dto.observacion() : "");
-                payloads.add(salio);
-            }
-
-            // 2️⃣ Los que quedan → PENDIENTE con su nueva posición (desde BD, no desde cola en memoria)
-            int pos = 1;
-            List<SolicitudLondraView> pendientes = repo.findLondraViewByEstadoSolOrderByIdSolicitudAsc(
-                    EstadoSolicitudEnum.PENDIENTE);
-            for (SolicitudLondraView s : pendientes) {
-                if (s.getMantIdLondra() == null) { pos++; continue; }
-                Map<String, Object> pendiente = new LinkedHashMap<>();
-                pendiente.put("mant_id", s.getMantIdLondra());
-                pendiente.put("Estado", "PENDIENTE");
-                pendiente.put("Cola", pos++);
-                payloads.add(pendiente);
-            }
-
-            if (!payloads.isEmpty()) {
-                londraNotificacionService.notificarActualizacionCola(payloads);
-            }
-
+            colaSolicitudes.remover(id);
             log.debug("Solicitud {} removida de cola PENDIENTE → EN_MANTENIMIENTO", id);
         }
 
@@ -236,15 +191,6 @@ public class SolicitudServiceImpl implements SolicitudService {
             colaPriorizada.remover(id);
             atencionRepo.cerrarFechaFinPorSolicitud(id);
             log.debug("Solicitud {} removida de ambas colas — FINALIZADO", id);
-
-            if (solicitud.getMantIdLondra() != null) {
-                Map<String, Object> payload = new LinkedHashMap<>();
-                payload.put("mant_id", solicitud.getMantIdLondra());
-                payload.put("Estado", "FINALIZADO");
-                payload.put("Cola", 0);
-                payload.put("Observacion", dto.observacion() != null ? dto.observacion() : "");
-                londraNotificacionService.notificarActualizacionCola(List.of(payload));
-            }
         }
     }
 

@@ -4,11 +4,11 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (4)"/>
 	<parameter name="NumSol" class="java.lang.Long"/>
 	<parameter name="CodigoActivo" class="java.lang.String"/>
-	<parameter name="logoUap" class="java.io.InputStream"/>
+	<parameter name="logoPrincipal" class="java.io.InputStream"/>
 	<parameter name="QRServicioTecnico" class="byte[]"/>
 	<parameter name="QRAutorizacion" class="byte[]"/>
 	<parameter name="QRVerificacion" class="byte[]"/>
-	<parameter name="Dtic" class="java.io.InputStream"/>
+	<parameter name="logoSecundario" class="java.io.InputStream"/>
 	<parameter name="Observacion" class="java.lang.String"/>
 	<parameter name="ServiciosIzquierda" class="java.lang.String">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
@@ -41,7 +41,7 @@ SELECT p_sol.nombre_per || ' ' || p_sol.ap_paterno_per || ' ' || p_sol.ap_matern
        STRING_AGG(DISTINCT s.nombre_serv, ', ')                                               AS tipoServicio,
        COALESCE(STRING_AGG(DISTINCT ts.nombre_tipo, ', '), '—')                              AS categoriaservicio,
        so.descripcion_sol                                                                     AS recomendacion,
-       so.nro_sol_externa                                                                      as MantidLondra,
+       so.nro_sol_externa                                                                      as IdExterno,
        COALESCE(MAX(aten.fecha_fin_reparacion_aten_sol), MAX(ds.fecha_actualizacion_det_sol)) AS fechaentrega
 FROM public.solicitud so
          LEFT JOIN public.administrativo adm_sol ON so.id_administrativo = adm_sol.id_administrativo
@@ -140,7 +140,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 		<property name="com.jaspersoft.studio.field.name" value="fechaentrega"/>
 		<property name="com.jaspersoft.studio.field.label" value="fechaentrega"/>
 	</field>
-	<field name="MantidLondra" class="java.lang.Integer"/>
+	<field name="IdExterno" class="java.lang.Integer"/>
 	<field name="categoriaservicio" class="java.lang.String"/>
 	<detail>
 		<band height="840">
@@ -222,7 +222,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
 			<element kind="staticText" uuid="8c4e3614-faf3-428f-bc32-dbbac943ccb8" key="" x="260" y="187" width="128" height="20" forecolor="#000000" markup="none" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[Datos del Equipo ]]></text>
+				<text><![CDATA[Datos del Recurso ]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="0.0"/>
@@ -234,7 +234,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
 			<element kind="staticText" uuid="376fac44-26f1-48e3-8a1f-24cce818b0e3" mode="Opaque" x="52" y="207" width="94" height="30" backcolor="#4F81BD" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
-				<text><![CDATA[Código Activo :]]></text>
+				<text><![CDATA[Código Recurso :]]></text>
 				<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<box leftPadding="5"/>
@@ -351,7 +351,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 					<pen lineWidth="1.0" lineColor="#4F81BD"/>
 				</element>
 				<element kind="staticText" uuid="c92e9e52-ed42-46cb-b543-c748c38524e7" x="96" y="-13" width="354" height="20" fontName="Roboto" fontSize="12.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
-					<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+					<text><![CDATA[ORGANIZACIÓN DEMO]]></text>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</element>
 				<element kind="staticText" uuid="f60ef31d-44e5-43f5-8039-300278cb181a" x="96" y="7" width="354" height="20" fontName="Roboto" fontSize="11.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
@@ -359,13 +359,13 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</element>
 				<element kind="image" uuid="4658a07a-1893-4810-bc74-ecf11f67762e" x="475" y="-13" width="50" height="59">
-					<expression><![CDATA[$P{Dtic}]]></expression>
+					<expression><![CDATA[$P{logoSecundario}]]></expression>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</element>
 				<element kind="image" uuid="db541d5f-61f3-4fa3-a244-4cffdf66f9ee" x="18" y="-13" width="60" height="69">
-					<expression><![CDATA[$P{logoUap}]]></expression>
+					<expression><![CDATA[$P{logoPrincipal}]]></expression>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</element>
 				<element kind="textField" uuid="c3d4e5f6-a7b8-9012-cdef-012345678901" x="96" y="27" width="354" height="20" fontName="Roboto" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
@@ -386,7 +386,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
 			<element kind="staticText" uuid="e998ecc0-9f9d-4bca-8ea4-b0c264c8e137" mode="Opaque" x="370" y="207" width="96" height="30" backcolor="#4F81BD" fontName="Roboto" fontSize="10.0" bold="true" vTextAlign="Middle">
-				<text><![CDATA[Tipo Activo:]]></text>
+				<text><![CDATA[Tipo Recurso:]]></text>
 				<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<box leftPadding="5"/>
@@ -459,7 +459,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 			</element>
 			<element kind="staticText" uuid="5c989300-c5e4-4129-b69f-ab1fdd4cc87c" x="52" y="705" width="544" height="24" fontName="DejaVu Sans" fontSize="7.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
 				<text><![CDATA[
-                    Nota: Todos los aparatos son devueltos con su respectivo informe técnico, el cual deberá contar la firma de conformidad del solicitante y del encargado de Hardware.]]></text>
+                    Nota: Todos los aparatos son devueltos con su respectivo informe técnico, el cual deberá contar la firma de conformidad del solicitante y del encargado de Soporte Técnico.]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
 			<element kind="textField" uuid="2e2089f6-b875-42b6-a63c-daf9f8d43da2" x="145" y="348" width="204" height="54">
@@ -479,7 +479,7 @@ GROUP BY p_sol.nombre_per, p_sol.ap_paterno_per, p_sol.ap_materno_per,
 				<box leftPadding="5"/>
 			</element>
 			<element kind="textField" uuid="92fea3dd-f92c-4588-8c45-6bffb19133f9" x="471" y="487" width="126" height="30" vTextAlign="Middle">
-				<expression><![CDATA[$F{MantidLondra} != null ? String.format("%04d", $F{MantidLondra}) + "/" + new java.text.SimpleDateFormat("yyyy").format($F{fecharecepcion}) : ""]]></expression>
+				<expression><![CDATA[$F{IdExterno} != null ? String.format("%04d", $F{IdExterno}) + "/" + new java.text.SimpleDateFormat("yyyy").format($F{fecharecepcion}) : ""]]></expression>
 			</element>
 			<element kind="textField" uuid="6c1b9112-7d26-4ea7-9bd6-84c49b8a5d01" x="50" y="685" width="181" height="10" fontName="Roboto" fontSize="7.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 				<expression><![CDATA[$F{cargosolicitante}]]></expression>

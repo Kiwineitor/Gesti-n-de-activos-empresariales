@@ -9,7 +9,7 @@ import Skeleton from '@/components/ui/Skeleton.vue'
 import SathLoader from '@/components/ui/SathLoader.vue'
 
 const columnsTabla = [
-  { key: 'equipo', label: 'Equipo' },
+  { key: 'equipo', label: 'Recurso' },
   { key: 'prioridad', label: 'Prioridad', thClass: 'text-center', tdClass: 'text-center' },
   { key: 'estadoDetalle', label: 'Estado', thClass: 'text-center', tdClass: 'text-center' },
   { key: 'acciones', label: 'Acciones', sortable: false, thClass: 'text-center', tdClass: 'text-center' },
@@ -189,9 +189,9 @@ function etiquetaEstado(estado) {
     <!-- Título + filtros -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
        <div class="flex items-center gap-3 flex-wrap">
-        <h5 class="text-xl font-bold dark:text-white-light/90">Atenciones por Equipo</h5>
+        <h5 class="text-xl font-bold dark:text-white-light/90">Atenciones por Recurso</h5>
         <span class="badge bg-primary/10 text-primary py-1 px-3 rounded-full text-sm">
-          {{ listaFiltrada.length }} equipos · {{ listaAgrupada.length }} solicitudes
+          {{ listaFiltrada.length }} recursos · {{ listaAgrupada.length }} solicitudes
         </span>
         <!-- Toggle tabla / tarjetas -->
         <div class="flex rounded-lg overflow-hidden border border-white-light dark:border-[#253b5e]">
@@ -229,7 +229,7 @@ function etiquetaEstado(estado) {
           <option value="RESUELTO">Resuelto</option>
         </select>
         <div class="relative">
-          <input v-model="textoBusqueda" type="text" placeholder="Buscar solicitud o equipo..."
+          <input v-model="textoBusqueda" type="text" placeholder="Buscar solicitud o recurso..."
                  class="peer form-input py-2 ltr:pr-11 rtl:pl-11 w-full sm:w-56"/>
           <div class="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -271,7 +271,7 @@ function etiquetaEstado(estado) {
 
       <template v-else>
         <div v-if="listaFiltrada.length === 0" class="text-center text-white-dark py-10">
-          No hay equipos que coincidan con los filtros.
+          No hay recursos que coincidan con los filtros.
         </div>
         <template v-for="grupo in listaAgrupada" :key="grupo.idSolicitud">
           <div class="flex items-center gap-2.5 px-1 mb-2">
@@ -279,7 +279,7 @@ function etiquetaEstado(estado) {
                   :style="`background-color: ${solicitudColores[grupo.idSolicitud] || '#888'}`"/>
             <span class="font-bold text-primary text-sm">{{ grupo.nroSolicitud || 'SOL-' + grupo.idSolicitud }}</span>
             <span class="badge bg-white-dark/10 text-white-dark text-xs">
-              {{ grupo.items.length }} {{ grupo.items.length === 1 ? 'equipo' : 'equipos' }}
+              {{ grupo.items.length }} {{ grupo.items.length === 1 ? 'recurso' : 'recursos' }}
             </span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
@@ -316,7 +316,7 @@ function etiquetaEstado(estado) {
         :data="listaFiltrada"
         :columns="columnsTabla"
         :loading="cargando"
-        empty-text="No hay equipos que coincidan con los filtros."
+        empty-text="No hay recursos que coincidan con los filtros."
       >
         <template #cell-equipo="{ row }">
           <div :style="estiloFila(row.idSolicitud)" class="pl-2">
@@ -370,7 +370,7 @@ function etiquetaEstado(estado) {
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
                 </div>
-                <h3 class="text-base font-semibold">Detalle del equipo</h3>
+                <h3 class="text-base font-semibold">Detalle del recurso</h3>
               </div>
               <button type="button" class="text-white-dark hover:text-dark" @click="modalDetalle = false">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -436,7 +436,7 @@ function etiquetaEstado(estado) {
 
   </Teleport>
 
-  <!-- ── DRAWER ATENDER EQUIPO ── -->
+  <!-- ── DRAWER ATENDER RECURSO ── -->
   <DrawerAtenderEquipo
     v-model="drawerAtender"
     :item="itemSeleccionado"

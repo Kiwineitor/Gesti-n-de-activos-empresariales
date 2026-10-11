@@ -29,7 +29,7 @@ public class InformeEquipoEspecificoServiceImpl implements InformeEquipoEspecifi
                 .orElseThrow(() -> new IllegalArgumentException("DetalleSolicitud no encontrado: " + dto.getIdDetalleSolicitud()));
 
         if (repo.existsByDetalleSolicitudIdDetalleSolicitud(dto.getIdDetalleSolicitud())) {
-            throw new IllegalStateException("Ya existe un informe específico para este equipo");
+            throw new IllegalStateException("Ya existe un informe específico para este recurso");
         }
 
         InformeEquipoEspecifico entity = mapper.toEntity(dto);

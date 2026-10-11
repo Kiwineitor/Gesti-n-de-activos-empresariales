@@ -77,7 +77,7 @@ public class ActivoController {
         Optional<Activo> opt = activoRepo.findByCodigoAct(codigo.trim());
         if (opt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("mensaje", "No se encontró activo con código: " + codigo.trim()));
+                    .body(Map.of("mensaje", "No se encontró recurso con código: " + codigo.trim()));
         }
         Activo a = opt.get();
         return ResponseEntity.ok(Map.of(

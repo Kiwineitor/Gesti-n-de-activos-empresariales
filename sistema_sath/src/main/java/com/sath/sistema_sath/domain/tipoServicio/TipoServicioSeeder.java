@@ -19,8 +19,8 @@ public class TipoServicioSeeder implements CommandLineRunner {
         if (repo.count() > 0) return;
 
         List<String[]> tipos = List.of(
-                new String[]{"PREVENTIVO",       "Mantenimiento y limpieza programada del equipo"},
-                new String[]{"CORRECTIVO",        "Reparación de fallas o daños en el equipo"},
+                new String[]{"PREVENTIVO",       "Mantenimiento programado del recurso"},
+                new String[]{"CORRECTIVO",        "Reparación de fallas o daños en el recurso"},
                 new String[]{"SERVICIO TÉCNICO",  "Servicios menores de soporte técnico"}
         );
 

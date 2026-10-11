@@ -34,7 +34,7 @@ public class TipoActivoServiceImpl implements TipoActivoService {
 
     @Override
     public TipoActivoResponseDto findById(Long id) {
-        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de activo no encontrado con ID: " + id));
+        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + id));
 
         return mapper.toResponseDto(entity);
     }
@@ -48,7 +48,7 @@ public class TipoActivoServiceImpl implements TipoActivoService {
     @Override
     @CacheEvict(value = "tipoActivo", allEntries = true)
     public void delete(Long id) {
-        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de activo no encontrado con ID: " + id));
+        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + id));
         entity.setEstado(EstadoEnum.ELIMINADO);
         tipoActivoRepository.save(entity);
 
@@ -57,7 +57,7 @@ public class TipoActivoServiceImpl implements TipoActivoService {
     @Override
     @CacheEvict(value = "tipoActivo", allEntries = true)
     public TipoActivoResponseDto update(Long id, TipoActivoCreateDto dto) {
-        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de activo no encontrado con ID: " + id));
+        TipoActivo entity = tipoActivoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + id));
 
         entity.setNombreTipoAct(dto.getNombreTipoAct());
 

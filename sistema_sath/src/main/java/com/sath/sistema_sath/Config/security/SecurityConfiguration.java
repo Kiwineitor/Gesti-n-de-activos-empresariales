@@ -58,7 +58,6 @@ public class SecurityConfiguration {
 
                         // ── PÚBLICOS ───────────────────────────────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/mantenimiento/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         // Archivos estáticos del SPA (Vue)
@@ -70,7 +69,7 @@ public class SecurityConfiguration {
                                 "/solicitud", "/solicitud/**",
                                 "/atenciones", "/tecnico-asignado", "/administrativo",
                                 "/usuario", "/servicio", "/activo", "/historial-activo",
-                                "/reportes", "/reportes-legacy", "/tipo-servicio", "/tipo-activo",
+                                "/reportes", "/configuracion", "/tipo-servicio", "/tipo-activo",
                                 "/falla", "/dashboard-tecnico", "/notificaciones", "/logs", "/logs-vue",
                                 "/error/**").permitAll()
 
@@ -109,13 +108,12 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/informes-equipo-especifico/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
                         .requestMatchers("/api/informes-equipo-general/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
                         .requestMatchers("/api/reportes/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
-                        .requestMatchers("/api/reportes-legacy/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
                         .requestMatchers("/api/dashboard/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
                         .requestMatchers("/api/evidencia/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
                         .requestMatchers("/api/prioridad/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "DEVELOPER")
 
-                        // ── APOYO / BECARIO (solo GET) ────────────────────────────────
-                        .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "SOLICITANTE", "APOYO", "BECARIO", "DEVELOPER")
+                        // ── RESTO DE ROLES (solo GET) ────────────────────────────────
+                        .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("ADMINISTRADOR", "TECNICO", "SUPERVISOR", "USUARIO", "SOLICITANTE", "APOYO", "DEVELOPER")
 
                         .anyRequest().authenticated()
                 )

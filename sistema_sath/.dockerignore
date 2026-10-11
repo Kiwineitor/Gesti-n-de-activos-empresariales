@@ -1,0 +1,12 @@
+target/
+logs/
+Logs/
+uploads/
+.idea/
+.vscode/
+*.iml
+Sath-frontend/node_modules/
+Sath-frontend/dist/
+Sath-frontend/android/
+src/main/resources/static/assets/
+src/main/resources/static/index.html

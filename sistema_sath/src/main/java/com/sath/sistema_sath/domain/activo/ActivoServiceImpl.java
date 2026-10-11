@@ -28,7 +28,7 @@ public class ActivoServiceImpl implements ActivoService {
         // 2. Reconstruir relaciones manualmente
         if (dto.getIdTipoActivo() != null) {
             TipoActivo tipo = tipoActivoRepository.findById(dto.getIdTipoActivo())
-                    .orElseThrow(() -> new IllegalArgumentException("TipoActivo no encontrado con ID: " + dto.getIdTipoActivo()));
+                    .orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + dto.getIdTipoActivo()));
             entity.setTipoActivo(tipo);
         }
 
@@ -44,14 +44,14 @@ public class ActivoServiceImpl implements ActivoService {
     @Override
     public ActivoResponseDto findById(Long id) {
         Activo entity = activoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Activo no encontrado con ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Recurso no encontrado con ID: " + id));
         return activoMapper.toResponseDto(entity);
     }
 
     @Override
     public ActivoResponseDto update(Long id, ActivoUpdateDto dto) {
         Activo entity = activoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Activo no encontrado con ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Recurso no encontrado con ID: " + id));
 
         // 1. Usar el mapper para actualizar campos simples (código, descripción, etc.)
         activoMapper.updateFromDto(dto, entity);
@@ -59,7 +59,7 @@ public class ActivoServiceImpl implements ActivoService {
         // 2. Actualizar relación manualmente (esto está perfecto como lo hiciste)
         if (dto.getIdTipoActivo() != null) {
             TipoActivo tipo = tipoActivoRepository.findById(dto.getIdTipoActivo())
-                    .orElseThrow(() -> new IllegalArgumentException("TipoActivo no encontrado con ID: " + dto.getIdTipoActivo()));
+                    .orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + dto.getIdTipoActivo()));
             entity.setTipoActivo(tipo);
         }
 

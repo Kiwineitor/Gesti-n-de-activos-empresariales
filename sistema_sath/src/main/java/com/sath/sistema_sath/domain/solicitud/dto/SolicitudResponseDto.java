@@ -14,7 +14,7 @@ public record SolicitudResponseDto(Long idSolicitud,
         LocalDate fechaSol,
         String descripcionSol,
         String observacionFicha,
-        Integer mantIdLondra,
+        Integer idExterno,
         String nroSolExterna,
         int posicionCola) {
 }

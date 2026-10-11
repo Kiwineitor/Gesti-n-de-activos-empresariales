@@ -1,0 +1,143 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="Solicitud" language="java" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="b1c2d3e4-0001-4abc-9def-000000000001">
+	<parameter name="id_solicitud" class="java.lang.Long"/>
+	<parameter name="logoPrincipal" class="java.io.InputStream"/>
+	<query language="sql"><![CDATA[
+SELECT
+    s.nro_sol,
+    s.gestion_sol,
+    s.fecha_sol,
+    s.estado_sol,
+    s.descripcion_sol,
+    CONCAT(p.nombre_per,' ',p.ap_paterno_per,' ',COALESCE(p.ap_materno_per,'')) AS nombre_completo,
+    COALESCE(p.ci_per,'')     AS ci_per,
+    COALESCE(u.nombre_uni,'') AS nombre_uni,
+    COALESCE(c.nombre_car,'') AS nombre_car,
+    COALESCE(STRING_AGG(
+        DISTINCT
+        COALESCE(a.codigo_act,'—') || ' | ' ||
+        COALESCE(a.descripcion_act,'—') || ' [' ||
+        COALESCE(ta.nombre_tipo_act,'—') || '] — ' ||
+        COALESCE(fr.descripcion_fall_rep,'Sin problema reportado'),
+        E'\n'
+    ), '—') AS activos_detalle
+FROM solicitud s
+JOIN administrativo  adm ON adm.id_administrativo = s.id_administrativo
+JOIN persona         p   ON p.id_persona           = adm.id_persona
+LEFT JOIN unidad     u   ON u.id_unidad             = adm.id_unidad
+LEFT JOIN cargo      c   ON c.id_cargo              = adm.id_cargo
+LEFT JOIN detalle_solicitud ds ON ds.id_solicitud   = s.id_solicitud
+                               AND ds._estado_aud <> 'ELIMINADO'
+LEFT JOIN activo     a   ON a.id_activo             = ds.id_activo
+LEFT JOIN tipo_activo ta ON ta.id_tipo_activo       = a.id_tipo_activo
+LEFT JOIN falla_reportada fr
+       ON fr.id_detalle_solicitud = ds.id_detalle_solicitud
+      AND fr._estado_aud <> 'ELIMINADO'
+WHERE s.id_solicitud = $P{id_solicitud}
+GROUP BY
+    s.nro_sol, s.gestion_sol, s.fecha_sol, s.estado_sol, s.descripcion_sol,
+    p.nombre_per, p.ap_paterno_per, p.ap_materno_per, p.ci_per,
+    u.nombre_uni, c.nombre_car
+	]]></query>
+	<field name="nro_sol"         class="java.lang.Long"/>
+	<field name="gestion_sol"     class="java.lang.Integer"/>
+	<field name="fecha_sol"       class="java.sql.Date"/>
+	<field name="estado_sol"      class="java.lang.String"/>
+	<field name="descripcion_sol" class="java.lang.String"/>
+	<field name="nombre_completo" class="java.lang.String"/>
+	<field name="ci_per"          class="java.lang.String"/>
+	<field name="nombre_uni"      class="java.lang.String"/>
+	<field name="nombre_car"      class="java.lang.String"/>
+	<field name="activos_detalle" class="java.lang.String"/>
+	<detail>
+		<band height="580" splitType="Stretch">
+			<element kind="image" uuid="b1c2d3e4-0001-4abc-9def-000000000002" x="0" y="5" width="60" height="60">
+				<expression><![CDATA[$P{logoPrincipal}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000003" x="65" y="5" width="487" height="28" fontSize="14.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[SOLICITUD DE SERVICIO]]></text>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000004" x="65" y="35" width="487" height="18" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[ORGANIZACIÓN DEMO]]></text>
+			</element>
+			<element kind="line" uuid="b1c2d3e4-0001-4abc-9def-000000000005" x="0" y="68" width="552" height="1">
+				<pen lineWidth="1.0" lineColor="#4361EE"/>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000006" mode="Opaque" x="0" y="72" width="552" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DATOS DE LA SOLICITUD]]></text>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000007" x="0" y="90" width="90" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[N° Solicitud:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000008" x="90" y="90" width="200" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nro_sol}.toString()]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000009" x="300" y="90" width="60" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Fecha:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000010" x="360" y="90" width="192" height="16" fontSize="9.0" pattern="dd/MM/yyyy" blankWhenNull="true">
+				<expression><![CDATA[$F{fecha_sol}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000011" x="0" y="108" width="90" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Estado:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000012" x="90" y="108" width="462" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{estado_sol}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000013" mode="Opaque" x="0" y="130" width="552" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DATOS DEL SOLICITANTE]]></text>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000014" x="0" y="148" width="90" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Solicitante:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000015" x="90" y="148" width="462" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nombre_completo} + ($F{ci_per} != null && !$F{ci_per}.isEmpty() ? " (CI: " + $F{ci_per} + ")" : "")]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000016" x="0" y="166" width="90" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Unidad:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000017" x="90" y="166" width="200" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nombre_uni}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000018" x="300" y="166" width="60" height="16" fontSize="9.0" bold="true" vTextAlign="Middle">
+				<text><![CDATA[Cargo:]]></text>
+				<box leftPadding="5"/>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000019" x="360" y="166" width="192" height="16" fontSize="9.0" blankWhenNull="true">
+				<expression><![CDATA[$F{nombre_car}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000020" mode="Opaque" x="0" y="188" width="552" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DESCRIPCIÓN GENERAL]]></text>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000021" x="0" y="206" width="552" height="50" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{descripcion_sol}]]></expression>
+				<box>
+					<pen lineWidth="0.3" lineColor="#CCCCCC"/>
+				</box>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000022" mode="Opaque" x="0" y="262" width="552" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[RECURSOS REPORTADOS]]></text>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000023" mode="Opaque" x="0" y="280" width="552" height="16" forecolor="#FFFFFF" backcolor="#6B7FD4" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[Código | Descripción [Tipo] — Problema]]></text>
+			</element>
+			<element kind="textField" uuid="b1c2d3e4-0001-4abc-9def-000000000024" x="0" y="298" width="552" height="60" fontSize="9.0" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{activos_detalle}]]></expression>
+				<box>
+					<pen lineWidth="0.3" lineColor="#CCCCCC"/>
+				</box>
+			</element>
+			<element kind="line" uuid="b1c2d3e4-0001-4abc-9def-000000000025" x="0" y="560" width="552" height="1">
+				<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+			</element>
+			<element kind="staticText" uuid="b1c2d3e4-0001-4abc-9def-000000000026" x="0" y="564" width="552" height="14" fontSize="8.0" hTextAlign="Center">
+				<text><![CDATA[Documento generado por ServiceDesk]]></text>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

@@ -46,8 +46,8 @@ public class Solicitud extends Auditoria {
     @Column(name = "nro_sol_externa", length = 50)
     private String nroSolExterna;
 
-    @Column(name = "mant_id_londra")
-    private Integer mantIdLondra;
+    @Column(name = "id_externo")
+    private Integer idExterno;
 
     @Column(name = "observacion_ficha", columnDefinition = "TEXT")
     private String observacionFicha;

@@ -14,13 +14,13 @@ public class ConfiguracionController {
 
     private final ConfiguracionService service;
 
-    @GetMapping("/dtic")
+    @GetMapping("/soporte")
     @ResponseBody
     public ResponseEntity<ConfiguracionReporteDto> obtenerConfiguracion() {
         return ResponseEntity.ok(service.obtenerConfiguracionReportes());
     }
 
-    @PutMapping("/dtic")
+    @PutMapping("/soporte")
     @ResponseBody
     public ResponseEntity<ConfiguracionReporteDto> guardarConfiguracion(@RequestBody ConfiguracionReporteDto dto) {
         return ResponseEntity.ok(service.guardarValores(dto.nombreAutorizado(), dto.cargoAutorizado()));

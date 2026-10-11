@@ -73,7 +73,7 @@ public class DetalleSolicitudServiceImpl implements DetalleSolicitudService {
             entity.setSolicitud(solicitudRepo.findById(idSolicitud).orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada")));
         }
         if (idActivo != null) {
-            entity.setActivo(activoRepo.findById(idActivo).orElseThrow(() -> new IllegalArgumentException("Activo no encontrado" )));
+            entity.setActivo(activoRepo.findById(idActivo).orElseThrow(() -> new IllegalArgumentException("Recurso no encontrado" )));
         }
     }
 }

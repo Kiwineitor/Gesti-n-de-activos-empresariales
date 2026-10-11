@@ -33,7 +33,7 @@ public interface AtencionSolicitudRepository extends JpaRepository<AtencionSolic
                    aten.id_atencion_solicitud AS "idAtencionSolicitud",
                    s.nro_sol                 AS "nroSolicitud",
                    s.estado_sol              AS "estadoSol",
-                   s.mant_id_londra          AS "mantIdLondra"
+                   s.id_externo          AS "idExterno"
             FROM atencion_solicitud aten
             INNER JOIN detalle_solicitud ds ON aten.id_detalle_solicitud = ds.id_detalle_solicitud
                                            AND ds._estado_aud <> 'ELIMINADO'

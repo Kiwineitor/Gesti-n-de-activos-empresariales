@@ -77,3 +77,6 @@ htmlcov/
 /.idea/
 /graphify-out/
 /.junie/
+
+# Plantilla de variables de entorno (sí se versiona)
+!.env.example

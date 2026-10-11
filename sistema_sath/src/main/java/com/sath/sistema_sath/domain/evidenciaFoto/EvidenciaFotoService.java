@@ -1,7 +1,7 @@
 package com.sath.sistema_sath.domain.evidenciaFoto;
 
 import com.sath.sistema_sath.Config.Enum.EstadoEnum;
-import com.sath.sistema_sath.Tools.FileStorageProperties;
+import com.sath.sistema_sath.tools.FileStorageProperties;
 import com.sath.sistema_sath.domain.solicitud.Solicitud;
 import com.sath.sistema_sath.domain.solicitud.SolicitudRepository;
 import lombok.RequiredArgsConstructor;

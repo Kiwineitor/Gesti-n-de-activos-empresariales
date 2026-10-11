@@ -82,11 +82,6 @@ const router = createRouter({
           component: () => import('@/views/ReportesView.vue'),
         },
         {
-          path: 'reportes-legacy',
-          name: 'reportes-legacy',
-          component: () => import('@/views/ReportesLegacyView.vue'),
-        },
-        {
           path: 'perfil',
           name: 'perfil',
           component: () => import('@/views/PerfilView.vue'),

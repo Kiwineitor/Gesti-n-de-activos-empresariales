@@ -1,9 +1,9 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
 <jasperReport name="InformeEspecifico" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="ae3f1c2d-1234-4abc-9def-000000000001">
 	<parameter name="IdInformeEspecifico" class="java.lang.Long"/>
-	<parameter name="logoUap" class="java.io.InputStream"/>
-	<parameter name="Dtic" class="java.io.InputStream"/>
-	<parameter name="Membrete_Informes" class="java.io.InputStream"/>
+	<parameter name="logoPrincipal" class="java.io.InputStream"/>
+	<parameter name="logoSecundario" class="java.io.InputStream"/>
+	<parameter name="membrete" class="java.io.InputStream"/>
 	<query language="sql"><![CDATA[
 SELECT
     ie.nro_informe                                                                              AS nroinformetext,
@@ -80,7 +80,7 @@ GROUP BY ie.nro_informe, ie.observaciones, ie.trabajo_realizado, ie.detalle, ie.
 				<pen lineWidth="1.0" lineColor="#4F81BD"/>
 			</element>
 			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000002" x="0" y="80" width="535" height="22" fontSize="13.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[INFORME TÉCNICO ESPECÍFICO DE EQUIPO]]></text>
+				<text><![CDATA[INFORME TÉCNICO ESPECÍFICO DE RECURSO]]></text>
 			</element>
 			<element kind="line" uuid="0000ae01-0000-0000-0000-000000000003" x="0" y="106" width="535" height="1">
 				<pen lineWidth="1.0" lineColor="#4361EE"/>
@@ -138,16 +138,16 @@ GROUP BY ie.nro_informe, ie.observaciones, ie.trabajo_realizado, ie.detalle, ie.
 				<expression><![CDATA[$F{cargo}]]></expression>
 			</element>
 			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000019" mode="Opaque" x="0" y="230" width="535" height="16" forecolor="#FFFFFF" backcolor="#4361EE" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[DATOS DEL EQUIPO]]></text>
+				<text><![CDATA[DATOS DEL RECURSO]]></text>
 			</element>
 			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000020" x="0" y="248" width="130" height="16" fontSize="9.0" bold="true">
-				<text><![CDATA[Código Activo:]]></text>
+				<text><![CDATA[Código Recurso:]]></text>
 			</element>
 			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000021" x="130" y="248" width="130" height="16" fontSize="9.0" blankWhenNull="true">
 				<expression><![CDATA[$F{codigoactivo}]]></expression>
 			</element>
 			<element kind="staticText" uuid="0000ae01-0000-0000-0000-000000000022" x="270" y="248" width="130" height="16" fontSize="9.0" bold="true">
-				<text><![CDATA[Tipo de Equipo:]]></text>
+				<text><![CDATA[Tipo de Recurso:]]></text>
 			</element>
 			<element kind="textField" uuid="0000ae01-0000-0000-0000-000000000023" x="400" y="248" width="135" height="16" fontSize="9.0" blankWhenNull="true">
 				<expression><![CDATA[$F{tipoactivo}]]></expression>
@@ -246,7 +246,7 @@ GROUP BY ie.nro_informe, ie.observaciones, ie.trabajo_realizado, ie.detalle, ie.
 				<text><![CDATA[Solicitante]]></text>
 			</element>
 			<element kind="staticText" uuid="d37f8176-845b-4659-b2b9-dbc4d80ffa51" x="92" y="10" width="352" height="59" fontName="Roboto" fontSize="13.0" bold="true" italic="false" hTextAlign="Center" vTextAlign="Middle">
-				<text><![CDATA[UNIVERSIDAD AMAZÓNICA DE PANDO]]></text>
+				<text><![CDATA[ORGANIZACIÓN DEMO]]></text>
 				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
 			<element kind="rectangle" uuid="5ba21bfe-8c66-4d70-8ca9-6140764bfd2e" mode="Transparent" x="444" y="10" width="94" height="60" forecolor="#4F81BD">
@@ -259,11 +259,11 @@ GROUP BY ie.nro_informe, ie.observaciones, ie.trabajo_realizado, ie.detalle, ie.
 				<pen lineWidth="1.0" lineColor="#4F81BD"/>
 			</element>
 			<element kind="image" uuid="95bc24ab-88bf-4fc2-9c81-b7932fa1ac4a" x="13" y="11" width="60" height="69">
-				<expression><![CDATA[$P{logoUap}]]></expression>
+				<expression><![CDATA[$P{logoPrincipal}]]></expression>
 				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
 			<element kind="image" uuid="c81d1e9d-b3a8-4827-8cc2-d8c72aede409" x="470" y="10" width="50" height="59">
-				<expression><![CDATA[$P{Dtic}]]></expression>
+				<expression><![CDATA[$P{logoSecundario}]]></expression>
 				<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<property name="com.jaspersoft.studio.unit.y" value="px"/>

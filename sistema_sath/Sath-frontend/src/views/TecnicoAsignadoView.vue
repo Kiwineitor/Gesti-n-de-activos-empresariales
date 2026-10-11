@@ -64,7 +64,7 @@ const solFiltradas = computed(() => {
   return solicitudes.value.filter((s) =>
     String(s.nroSol ?? '').includes(q) ||
     (s.descripcionSol ?? '').toLowerCase().includes(q) ||
-    (s.mantIdLondra ?? '').toLowerCase().includes(q),
+    (s.idExterno ?? '').toLowerCase().includes(q),
   )
 })
 
@@ -102,7 +102,7 @@ async function cargarSolicitudes() {
 
 function labelSolicitud(id) {
   const s = solicitudes.value.find(x => x.idSolicitud === id)
-  return s ? ('Nro. ' + s.nroSol + (s.mantIdLondra ? ' (Londra: ' + s.mantIdLondra + ')' : '')) : 'ID ' + id
+  return s ? ('Nro. ' + s.nroSol + (s.idExterno ? ' (ID ext.: ' + s.idExterno + ')' : '')) : 'ID ' + id
 }
 
 function seleccionarTecnico(u) {
@@ -478,7 +478,7 @@ function inicial(nombre) { return (nombre || 'T').charAt(0).toUpperCase() }
                   <input type="text"
                     class="form-input w-full transition-all"
                     :class="form.idsSolicitud.length > 0 ? 'border-success/60' : ''"
-                    placeholder="Buscar por Nro. o ID Londra..."
+                    placeholder="Buscar por Nro. o ID externo..."
                     v-model="solBusqueda"
                     @focus="solAbierto = true; tecAbierto = false"
                     @input="solAbierto = true"
@@ -499,7 +499,7 @@ function inicial(nombre) { return (nombre || 'T').charAt(0).toUpperCase() }
                         </div>
                         <div>
                           <span class="font-semibold text-sm dark:text-white">Nro. {{ s.nroSol }}</span>
-                          <span v-if="s.mantIdLondra" class="ml-2 text-xs text-white-dark">· Londra: {{ s.mantIdLondra }}</span>
+                          <span v-if="s.idExterno" class="ml-2 text-xs text-white-dark">· ID ext.: {{ s.idExterno }}</span>
                         </div>
                       </div>
                       <span class="badge text-xs font-medium flex-shrink-0"

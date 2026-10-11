@@ -1,38 +1,9 @@
-# Sath-frontend
+# ServiceDesk · Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Interfaz web de ServiceDesk (Sistema de Gestión de Solicitudes de Servicio), construida con Vue 3 + Vite.
 
-## Recommended IDE Setup
+- `npm install` — instala las dependencias.
+- `npm run dev` — servidor de desarrollo en http://localhost:5173; las rutas `/api` y `/ws` se redirigen al backend en http://localhost:9006 (configurable con `BACKEND_URL`).
+- `npm run build` — genera la versión de producción en `../src/main/resources/static`, desde donde la sirve el backend.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Para levantar el sistema completo con Docker, consulta el README de la raíz del repositorio.

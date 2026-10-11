@@ -16,7 +16,7 @@ onMounted(cargar)
 async function cargar() {
   cargando.value = true
   try {
-    const res = await get('/api/configuracion/dtic')
+    const res = await get('/api/configuracion/soporte')
     if (!res?.ok) throw new Error('Error al cargar la configuración')
     const datos = await res.json()
     formulario.value.nombreAutorizado = datos.nombreAutorizado ?? ''
@@ -31,7 +31,7 @@ async function guardar() {
   }
   guardando.value = true
   try {
-    const res = await put('/api/configuracion/dtic', {
+    const res = await put('/api/configuracion/soporte', {
       nombreAutorizado: formulario.value.nombreAutorizado.trim(),
       cargoAutorizado:  formulario.value.cargoAutorizado.trim(),
     })
@@ -72,14 +72,14 @@ async function guardar() {
           Nombre del autorizado <span class="text-danger">*</span>
         </label>
         <input v-model="formulario.nombreAutorizado" type="text" class="form-input"
-          placeholder="Ej: Lic. Eduardo Zubieta Copeticon" autocomplete="off" @keydown.enter.prevent="guardar" />
+          placeholder="Ej: Ing. Juan Pérez" autocomplete="off" @keydown.enter.prevent="guardar" />
       </div>
       <div>
         <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">
           Cargo <span class="text-danger">*</span>
         </label>
         <input v-model="formulario.cargoAutorizado" type="text" class="form-input"
-          placeholder="Ej: JEFE a.i DIRECCION DE TECNOLOGIA, INFORMACION Y COMUNICACION" autocomplete="off" @keydown.enter.prevent="guardar" />
+          placeholder="Ej: Jefe de Soporte Técnico" autocomplete="off" @keydown.enter.prevent="guardar" />
       </div>
       <div class="flex justify-end gap-2">
         <button class="btn btn-outline-secondary" :disabled="guardando" @click="cargar">Restablecer</button>

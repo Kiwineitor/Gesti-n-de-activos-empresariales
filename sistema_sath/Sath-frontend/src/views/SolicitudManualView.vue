@@ -112,7 +112,7 @@ function aMayusculas(e) {
   e.target.value = e.target.value.toUpperCase()
 }
 
-// Activos
+// Recursos
 function nuevoEquipo() {
   return {
     codigoActivo: '',
@@ -141,35 +141,24 @@ async function buscarActivo(eq) {
   eq.buscando = true
   eq.responsableInfo = null
 
-  // 1. Buscar en SCIAF para obtener responsable y descripción
-  const sciafRes = await get(`/api/public/sciaf/ficha/${encodeURIComponent(eq.codigoActivo.trim())}`)
-  if (sciafRes && sciafRes.ok) {
-    const sciaf = await sciafRes.json()
-    if (!eq.descripcionActivo) eq.descripcionActivo = sciaf.descripcion || ''
-    eq.responsableInfo = {
-      responsable: sciaf.responsable || '—',
-      cargo:       sciaf.oficina   || '—',
-      unidad:      sciaf.unidad    || '—',
-      fuente: 'sciaf'
-    }
-    // 2. Intentar pre-llenar tipoActivo desde BD local
-    const localRes = await get(`/api/public/activos/buscar?codigo=${eq.codigoActivo.trim()}`)
-    if (localRes && localRes.ok) {
-      const local = await localRes.json()
-      const match = tiposActivo.value.find(t => t.nombreTipoAct === local.tipoActivo)
-      eq.tipoActivoSel = match ? local.tipoActivo : (local.tipoActivo ? '__nuevo__' : '')
-      eq.tipoActivoBusqueda = match ? local.tipoActivo : ''
-      if (!match && local.tipoActivo) eq.tipoActivoNuevo = local.tipoActivo
-    }
+  // Buscar en la BD local para pre-llenar descripción y tipo
+  const localRes = await get(`/api/public/activos/buscar?codigo=${encodeURIComponent(eq.codigoActivo.trim())}`)
+  if (localRes && localRes.ok) {
+    const local = await localRes.json()
+    if (!eq.descripcionActivo) eq.descripcionActivo = local.descripcionActivo || ''
+    const match = tiposActivo.value.find(t => t.nombreTipoAct === local.tipoActivo)
+    eq.tipoActivoSel = match ? local.tipoActivo : (local.tipoActivo ? '__nuevo__' : '')
+    eq.tipoActivoBusqueda = match ? local.tipoActivo : ''
+    if (!match && local.tipoActivo) eq.tipoActivoNuevo = local.tipoActivo
     eq.buscando = false
-    toast('Activo encontrado', 'success')
+    toast('Recurso encontrado', 'success')
     return
   }
 
-  // No encontrado — sin datos del solicitante (el usuario ingresa manualmente)
+  // No encontrado — el usuario ingresa los datos manualmente
   eq.responsableInfo = null
   eq.buscando = false
-  toast('Activo no encontrado — ingresa los datos manualmente', 'warning')
+  toast('Recurso no encontrado — ingresa los datos manualmente', 'warning')
 }
 
 function agregarEquipo() { equipos.value.push(nuevoEquipo()) }
@@ -236,7 +225,7 @@ async function enviar() {
     toast('Descripción mínimo 5 caracteres', 'error'); return
   }
   if (equipos.value.some(e => !e.codigoActivo.trim() || !e.problemaEspecifico.trim())) {
-    toast('Cada activo requiere código y problema específico', 'error'); return
+    toast('Cada recurso requiere código y problema específico', 'error'); return
   }
 
   const body = {
@@ -335,7 +324,7 @@ async function enviar() {
         <h5 class="text-xl font-bold dark:text-white-light/90">Registrar Solicitud de Mantenimiento</h5>
       </div>
       <p class="text-sm text-white-dark ltr:pl-13 rtl:pr-13">
-        Completa los datos del solicitante, describe el problema y registra los activos afectados.
+        Completa los datos del solicitante, describe el problema y registra los recursos afectados.
       </p>
     </div>
 
@@ -498,24 +487,24 @@ async function enviar() {
     </div>
 
     <!-- ═══════════════════════════════════════════════ -->
-    <!-- PASO 3: EQUIPOS / ACTIVOS                       -->
+    <!-- PASO 3: RECURSOS                                -->
     <!-- ═══════════════════════════════════════════════ -->
     <div class="panel">
       <div class="flex items-center justify-between mb-1">
         <div class="flex items-center gap-2">
           <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-white text-xs font-bold">3</span>
-          <h6 class="text-base font-semibold dark:text-white">Equipos afectados</h6>
+          <h6 class="text-base font-semibold dark:text-white">Recursos afectados</h6>
           <span class="badge bg-primary/10 text-primary py-1 px-2 rounded-full text-xs">{{ equipos.length }}</span>
         </div>
         <button class="btn btn-sm btn-outline-primary flex items-center gap-1" @click="agregarEquipo">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          Agregar activo
+          Agregar recurso
         </button>
       </div>
       <p class="text-xs text-white-dark mb-4 ltr:pl-9 rtl:pr-9">
-        Registra cada activo con su código. Al buscarlo, el sistema intentará obtener la información del responsable automáticamente.
+        Registra cada recurso con su código. Al buscarlo, el sistema intentará completar su descripción y tipo automáticamente.
       </p>
 
       <!-- Ayuda -->
@@ -524,19 +513,15 @@ async function enviar() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
-          ¿Cómo buscar mis activos?
+          ¿Cómo buscar mis recursos?
         </summary>
         <div class="px-4 pb-4 text-xs text-white-dark space-y-2 leading-relaxed">
-          <p><strong>1.</strong> Ingresa el código del activo en el campo <em>"Código del activo"</em> y presiona <strong>Buscar</strong> o la tecla <strong>Enter</strong>.</p>
-          <div class="rounded-md border border-warning/30 bg-warning/5 p-3">
-            <p class="font-semibold text-warning text-xs mb-1">⚠ Importante: no incluyas el prefijo "148-"</p>
-            <p>El código del activo generalmente aparece como <strong>148-XX-XX-XX-XXXX</strong> en los registros de SCIAF. Para la búsqueda, ingresa <strong>solo el código sin el prefijo 148-</strong>. Ejemplo: si tu activo es <strong>148-01-12-03-0005</strong>, escribe únicamente <strong>01-12-03-0005</strong>.</p>
-          </div>
-          <p><strong>2.</strong> Si el activo se encuentra en el sistema SCIAF, se mostrará automáticamente el responsable, la unidad y la descripción del equipo.</p>
-          <p><strong>3.</strong> Si el activo no se encuentra, podrás completar los datos manualmente.</p>
-          <p><strong>4.</strong> En el campo <em>"Tipo de activo"</em> puedes escribir para filtrar la lista o seleccionar directamente.</p>
-          <p><strong>5.</strong> Describe brevemente el problema que presenta cada equipo en el campo <em>"Describe el problema"</em>.</p>
-          <p><strong>6.</strong> Si necesitas reportar más de un equipo, haz clic en <em>"Agregar activo"</em> para añadir otro.</p>
+          <p><strong>1.</strong> Ingresa el código del recurso en el campo <em>"Código del recurso"</em> y presiona <strong>Buscar</strong> o la tecla <strong>Enter</strong>.</p>
+          <p><strong>2.</strong> Si el recurso ya está registrado en el sistema, se completarán automáticamente su descripción y su tipo.</p>
+          <p><strong>3.</strong> Si el recurso no se encuentra, podrás completar los datos manualmente.</p>
+          <p><strong>4.</strong> En el campo <em>"Tipo de recurso"</em> puedes escribir para filtrar la lista o seleccionar directamente.</p>
+          <p><strong>5.</strong> Describe brevemente el problema que presenta cada recurso en el campo <em>"Describe el problema"</em>.</p>
+          <p><strong>6.</strong> Si necesitas reportar más de un recurso, haz clic en <em>"Agregar recurso"</em> para añadir otro.</p>
         </div>
       </details>
 
@@ -546,9 +531,9 @@ async function enviar() {
           :key="i"
           class="rounded-lg border border-[#e0e6ed] dark:border-[#1b2e4b] p-4 space-y-3"
         >
-          <!-- Header del activo -->
+          <!-- Header del recurso -->
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase text-white-dark">Activo #{{ i + 1 }}</span>
+            <span class="text-xs font-semibold uppercase text-white-dark">Recurso #{{ i + 1 }}</span>
             <button
               v-if="equipos.length > 1"
               class="btn btn-xs btn-outline-danger flex items-center gap-1"
@@ -564,12 +549,12 @@ async function enviar() {
           <!-- Código + Buscar -->
           <div class="flex gap-2">
             <div class="flex-1">
-              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Código del activo <span class="text-danger">*</span></label>
+              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Código del recurso <span class="text-danger">*</span></label>
               <input
                 v-model="eq.codigoActivo"
                 type="text"
                 class="form-input"
-                placeholder="Solo el código, sin prefijo 148. Ej: 00123"
+                placeholder="Ej: 00123"
                 @keyup.enter="buscarActivo(eq)"
               />
             </div>
@@ -590,40 +575,19 @@ async function enviar() {
             </div>
           </div>
 
-          <!-- Panel responsable del activo -->
-          <div
-            v-if="eq.responsableInfo"
-            :class="eq.responsableInfo.fuente === 'sciaf'
-              ? 'rounded-lg border border-success/30 bg-success/5 p-3 text-sm space-y-1'
-              : 'rounded-lg border border-warning/30 bg-warning/5 p-3 text-sm space-y-1'"
-          >
-            <p :class="eq.responsableInfo.fuente === 'sciaf' ? 'text-xs font-semibold text-success uppercase mb-1' : 'text-xs font-semibold text-warning uppercase mb-1'">
-              {{ eq.responsableInfo.fuente === 'sciaf' ? 'Responsable del activo (SCIAF)' : 'Datos del solicitante (referencia)' }}
-            </p>
-            <p class="text-white-dark">
-              <span class="font-semibold text-black dark:text-white">Responsable:</span> {{ eq.responsableInfo.responsable }}
-            </p>
-            <p class="text-white-dark">
-              <span class="font-semibold text-black dark:text-white">Cargo / Oficina:</span> {{ eq.responsableInfo.cargo }}
-            </p>
-            <p class="text-white-dark">
-              <span class="font-semibold text-black dark:text-white">Unidad:</span> {{ eq.responsableInfo.unidad }}
-            </p>
-          </div>
-
           <!-- Descripción y Tipo -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Descripción del activo</label>
+              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Descripción del recurso</label>
               <input v-model="eq.descripcionActivo" type="text" class="form-input" placeholder="Descripción" />
             </div>
             <div class="relative">
-              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Tipo de activo <span class="text-[10px] normal-case font-normal text-white-dark">(opcional — lo asigna el técnico)</span></label>
+              <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Tipo de recurso <span class="text-[10px] normal-case font-normal text-white-dark">(opcional — lo asigna el técnico)</span></label>
               <input
                 v-model="eq.tipoActivoBusqueda"
                 type="text"
                 class="form-input"
-                :placeholder="eq.tipoActivoSel && eq.tipoActivoSel !== '__nuevo__' ? eq.tipoActivoSel : 'Buscar tipo de activo...'"
+                :placeholder="eq.tipoActivoSel && eq.tipoActivoSel !== '__nuevo__' ? eq.tipoActivoSel : 'Buscar tipo de recurso...'"
                 autocomplete="off"
                 @focus="abrirTipoActivo(eq)"
                 @input="eq.tipoActivoOpen = true"
@@ -658,19 +622,19 @@ async function enviar() {
                 v-model="eq.tipoActivoNuevo"
                 type="text"
                 class="form-input mt-2"
-                placeholder="Escribe el nuevo tipo de activo"
+                placeholder="Escribe el nuevo tipo de recurso"
               />
             </div>
           </div>
 
           <!-- Problema -->
           <div>
-            <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Describe el problema que presenta este activo <span class="text-danger">*</span></label>
+            <label class="mb-1 block text-xs font-semibold uppercase text-white-dark">Describe el problema que presenta este recurso <span class="text-danger">*</span></label>
             <textarea
               v-model="eq.problemaEspecifico"
               class="form-textarea w-full"
               rows="2"
-              placeholder="Describe el problema específico de este activo..."
+              placeholder="Describe el problema específico de este recurso..."
             />
           </div>
         </div>

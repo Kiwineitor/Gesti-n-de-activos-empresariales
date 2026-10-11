@@ -1,6 +1,6 @@
 {
-  "appId": "bo.edu.uap.sath",
-  "appName": "SATH",
+  "appId": "com.demo.servicedesk",
+  "appName": "ServiceDesk",
   "webDir": "dist",
   "android": {
     "allowMixedContent": true

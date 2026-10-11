@@ -33,7 +33,7 @@ public class FallaServiceImpl implements FallaService {
 
         if (dto.getIdTipoActivo() != null) {
             entity.setTipoActivo(tipoActivoRepository.findById(dto.getIdTipoActivo())
-                    .orElseThrow(() -> new IllegalArgumentException("Tipo Activo no encontrado con ID: " + dto.getIdTipoActivo())));
+                    .orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado con ID: " + dto.getIdTipoActivo())));
         }
 
         return mapper.toResponseDto(fallaRepository.save(entity));
@@ -64,7 +64,7 @@ public class FallaServiceImpl implements FallaService {
         // 3. Manejar el cambio de TipoActivo manualmente
         if (dto.getIdTipoActivo() != null) {
             TipoActivo nuevoTipo = tipoActivoRepository.findById(dto.getIdTipoActivo())
-                    .orElseThrow(() -> new IllegalArgumentException("Tipo Activo no encontrado: " + dto.getIdTipoActivo()));
+                    .orElseThrow(() -> new IllegalArgumentException("Tipo de recurso no encontrado: " + dto.getIdTipoActivo()));
             entity.setTipoActivo(nuevoTipo);
         }
 

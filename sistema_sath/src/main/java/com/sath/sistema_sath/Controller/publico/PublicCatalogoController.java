@@ -1,6 +1,5 @@
 package com.sath.sistema_sath.Controller.publico;
 
-import com.sath.sistema_sath.Sciaf.SciafService;
 import com.sath.sistema_sath.domain.activo.Activo;
 import com.sath.sistema_sath.domain.activo.ActivoRepository;
 import com.sath.sistema_sath.domain.cargo.Cargo;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +23,6 @@ public class PublicCatalogoController {
     private final CargoRepository cargoRepo;
     private final TipoActivoRepository tipoActivoRepo;
     private final ActivoRepository activoRepo;
-    private final SciafService sciafService;
 
     @GetMapping("/unidades")
     public List<Map<String, Object>> unidades() {
@@ -88,20 +85,6 @@ public class PublicCatalogoController {
                         "tipoActivo", a.getTipoActivo() != null ? a.getTipoActivo().getNombreTipoAct() : ""
                 )))
                 .orElseGet(() -> ResponseEntity.status(404).body(
-                        Map.of("mensaje", "No se encontró activo con código: " + codigo.trim())));
-    }
-
-    @GetMapping("/sciaf/ficha/{codigo}")
-    public ResponseEntity<Map<String, Object>> fichaSciaf(@PathVariable String codigo) {
-        Map<String, Object> completa = sciafService.obtenerFichaActivo(codigo);
-        if (completa == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Map<String, Object> filtrada = new HashMap<>();
-        filtrada.put("descripcion", completa.getOrDefault("descripcion", ""));
-        filtrada.put("responsable", completa.getOrDefault("responsable", ""));
-        filtrada.put("oficina", completa.getOrDefault("oficina", ""));
-        filtrada.put("unidad", completa.getOrDefault("unidad", ""));
-        return ResponseEntity.ok(filtrada);
+                        Map.of("mensaje", "No se encontró recurso con código: " + codigo.trim())));
     }
 }

@@ -18,7 +18,7 @@ public interface SolicitudMapper {
     @Mapping(target = "idSolicitud", ignore = true)
     Solicitud updateEntityFromDto(SolicitudUpdateDto dto, @MappingTarget Solicitud entity);
 
-    @Mapping(target = "mantIdLondra", source = "mantIdLondra")
+    @Mapping(target = "idExterno", source = "idExterno")
     SolicitudResponseDto toResponseDto(Solicitud entity);
 
     List<SolicitudResponseDto> toResponseDtoList(List<Solicitud> entities);

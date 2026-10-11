@@ -40,7 +40,7 @@ async function cargar() {
   cargando.value = true
   try {
     const res = await get('/api/tipo-activo/listar')
-    if (!res?.ok) throw new Error('Error al cargar tipos de activo')
+    if (!res?.ok) throw new Error('Error al cargar tipos de recurso')
     lista.value = await res.json()
   } catch (e) { toast(e.message, 'error') } finally { cargando.value = false }
 }
@@ -84,14 +84,14 @@ async function guardar() {
       const actualizado = await res.json()
       const idx = lista.value.findIndex(i => i.idTipoActivo === actualizado.idTipoActivo)
       if (idx !== -1) lista.value[idx].nombreTipoAct = actualizado.nombreTipoAct
-      toast('Tipo de activo actualizado correctamente')
+      toast('Tipo de recurso actualizado correctamente')
     } else {
       const res = await post('/api/tipo-activo/crear',
         { nombreTipoAct: formulario.value.nombreTipoAct.trim() })
       if (res?.status !== 201) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Error al crear') }
       const nuevo = await res.json()
       lista.value.unshift({ idTipoActivo: nuevo.idTipoActivo, nombreTipoAct: nuevo.nombreTipoAct })
-      toast('Tipo de activo creado correctamente')
+      toast('Tipo de recurso creado correctamente')
     }
     cerrarModal()
   } catch (e) { toast(e.message, 'error') } finally { guardando.value = false }
@@ -106,7 +106,7 @@ async function confirmarEliminar() {
   confirmEliminar.value = null
   try {
     const res = await del(`/api/tipo-activo/eliminar/${item.idTipoActivo}`)
-    if (res?.status === 204) { toast('Tipo de activo eliminado correctamente') }
+    if (res?.status === 204) { toast('Tipo de recurso eliminado correctamente') }
     else {
       if (backup && idx !== -1) lista.value.splice(idx, 0, backup)
       const e = await res.json().catch(() => ({}))
@@ -119,7 +119,7 @@ async function confirmarEliminar() {
 <template>
   <ul class="flex space-x-2 rtl:space-x-reverse mb-6">
     <li><RouterLink to="/" class="text-primary hover:underline">Inicio</RouterLink></li>
-    <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2 text-gray-400">Tipos de Activo</li>
+    <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2 text-gray-400">Tipos de Recurso</li>
   </ul>
 
   <div class="panel">
@@ -127,7 +127,7 @@ async function confirmarEliminar() {
     <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
       <div class="flex items-center gap-3">
         <h5 class="text-xl font-bold dark:text-white-light/90">
-          Tipos de Activo
+          Tipos de Recurso
           <span class="ml-2 badge bg-primary/10 text-primary py-1 px-3 rounded-full text-sm">
             {{ listaFiltrada.length }} registros
           </span>
@@ -184,7 +184,7 @@ async function confirmarEliminar() {
           :columns="columns"
           :loading="cargando"
           default-sort="nombreTipoAct"
-          empty-text="No hay tipos de activo registrados"
+          empty-text="No hay tipos de recurso registrados"
           striped
         >
           <template #cell-nombreTipoAct="{ row }">
@@ -224,7 +224,7 @@ async function confirmarEliminar() {
           </div>
         </div>
         <template v-else>
-          <p v-if="listaFiltrada.length === 0" class="py-10 text-center text-white-dark">No hay tipos de activo registrados</p>
+          <p v-if="listaFiltrada.length === 0" class="py-10 text-center text-white-dark">No hay tipos de recurso registrados</p>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <div v-for="item in listaFiltrada" :key="item.idTipoActivo"
             class="panel flex flex-col gap-3 hover:shadow-md transition-shadow">
@@ -277,7 +277,7 @@ async function confirmarEliminar() {
                     <line x1="12" y1="17" x2="12" y2="21"/>
                   </svg>
                 </div>
-                <h3 class="text-base font-semibold">{{ modoEdicion ? 'Editar' : 'Nuevo' }} Tipo de Activo</h3>
+                <h3 class="text-base font-semibold">{{ modoEdicion ? 'Editar' : 'Nuevo' }} Tipo de Recurso</h3>
               </div>
               <button type="button" class="text-white-dark hover:text-dark" @click="cerrarModal">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -322,7 +322,7 @@ async function confirmarEliminar() {
             <div class="p-5">
               <p class="text-sm text-white-dark mb-4">
                 ¿Estás seguro que deseas eliminar <strong class="text-dark dark:text-white">{{ confirmEliminar?.nombreTipoAct }}</strong>?
-                El tipo de activo quedará inactivo.
+                El tipo de recurso quedará inactivo.
               </p>
               <div class="flex justify-end gap-2">
                 <button class="btn btn-outline-secondary" @click="confirmEliminar = null">Cancelar</button>

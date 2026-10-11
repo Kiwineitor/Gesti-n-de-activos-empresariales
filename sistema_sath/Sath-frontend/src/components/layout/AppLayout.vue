@@ -81,7 +81,7 @@ onUnmounted(() => {
       </div>
 
       <footer class="p-6 pt-0 mt-auto text-center dark:text-white-dark/60 text-xs">
-        © {{ new Date().getFullYear() }} SATH · Universidad Amazónica de Pando
+        © {{ new Date().getFullYear() }} ServiceDesk · Sistema de Gestión de Solicitudes
       </footer>
     </div>
   </div>

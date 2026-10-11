@@ -296,10 +296,10 @@ function badgeClase(estado) {
       </div>
     </div>
 
-    <!-- Activos / detalles -->
+    <!-- Recursos / detalles -->
     <div class="panel">
       <h5 class="text-lg font-semibold dark:text-white-light/90 mb-4">
-        Activos en esta solicitud
+        Recursos en esta solicitud
         <span class="ml-2 text-sm font-normal text-white-dark">
           ({{ (solicitud.activos || []).length }} registro(s))
         </span>
@@ -308,7 +308,7 @@ function badgeClase(estado) {
         <table class="table-striped table-hover">
           <thead>
             <tr>
-              <th>Activo</th>
+              <th>Recurso</th>
               <th class="hidden sm:table-cell">Tipo</th>
               <th class="hidden md:table-cell">Código</th>
               <th class="hidden lg:table-cell">Problema</th>
@@ -319,7 +319,7 @@ function badgeClase(estado) {
           </thead>
           <tbody>
             <tr v-if="!solicitud.activos || solicitud.activos.length === 0">
-              <td colspan="7" class="text-center text-white-dark py-6">Sin activos registrados</td>
+              <td colspan="7" class="text-center text-white-dark py-6">Sin recursos registrados</td>
             </tr>
             <tr v-for="activo in solicitud.activos" :key="activo.idDetalleSolicitud">
               <td>

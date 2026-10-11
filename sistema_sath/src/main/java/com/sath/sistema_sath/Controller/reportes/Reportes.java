@@ -94,7 +94,7 @@ public class Reportes {
         byte[] pdf = reporteService.exportarReporteGeneral(fechaInicial, fechaFinal, idAdministrativo);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "Reporte_General_SATHv2.pdf");
+        headers.setContentDispositionFormData("attachment", "Reporte_General.pdf");
         headers.setContentLength(pdf.length);
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
@@ -111,7 +111,7 @@ public class Reportes {
         return ResponseEntity.ok()
                 // ↓ CAMBIO 3: Content-Type de Excel y extensión .xlsx
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=Reporte_SATH.xlsx")
+                        "attachment; filename=Reporte_General.xlsx")
                 .contentType(MediaType.parseMediaType(
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(excel);
@@ -182,7 +182,7 @@ public class Reportes {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "Reporte_Personalizado_SATH.pdf");
+        headers.setContentDispositionFormData("attachment", "Reporte_Personalizado.pdf");
         headers.setContentLength(pdf.length);
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
@@ -201,7 +201,7 @@ public class Reportes {
                 fechaInicial, fechaFinal, idUnidad, idTipoServicio, idTipoActivo, idAdministrativo);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Personalizado_SATH.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Personalizado.xlsx")
                 .contentType(MediaType.parseMediaType(
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(excel);
